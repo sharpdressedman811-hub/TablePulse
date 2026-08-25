@@ -5,6 +5,7 @@ import FloatingTabBar, { TabBarItem } from '@/components/FloatingTabBar';
 import SidebarNav from '@/components/SidebarNav';
 import { useColors } from '@/hooks/useColors';
 import { useLayout } from '@/hooks/useLayout';
+import { useSubscriptionGuard } from "@/hooks/useSubscriptionGuard";
 
 const TABS: TabBarItem[] = [
   { name: 'command-center', route: '/(tabs)/command-center', icon: 'home', label: 'Home' },
@@ -15,6 +16,8 @@ const TABS: TabBarItem[] = [
 ];
 
 export default function TabLayout() {
+  useSubscriptionGuard();
+
   const colors = useColors();
   const { isTablet } = useLayout();
 

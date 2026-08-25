@@ -1,6 +1,6 @@
 import "react-native-reanimated";
-import React, { useEffect } from "react";
-import { Stack } from "expo-router";
+import React, { useEffect, useState } from "react";
+import { Stack, Redirect, usePathname, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { SystemBars } from "react-native-edge-to-edge";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -15,6 +15,7 @@ import {
 } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { WidgetProvider } from "@/contexts/WidgetContext";
+import { SubscriptionProvider, useSubscription } from "@/contexts/SubscriptionContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import {
   useFonts,
@@ -23,6 +24,7 @@ import {
   DMSans_600SemiBold,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
+import { isOnboardingComplete } from "@/utils/onboardingStorage";
 
 // Only wrap with ErrorBoundary in dev — production apps should not include it
 const DevErrorBoundary = __DEV__
@@ -36,7 +38,44 @@ export const unstable_settings = {
   initialRouteName: "(tabs)",
 };
 
+
+function SubscriptionRedirect() {
+  const { isSubscribed, loading } = useSubscription();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (loading) return;
+    const onOnboarding = pathname.startsWith("/onboarding");
+    if (onOnboarding) return;
+
+    let cancelled = false;
+    isOnboardingComplete().then((done) => {
+      if (cancelled) return;
+      if (!done) return;
+      const onPaywall = pathname === "/paywall";
+      if (onPaywall) return;
+      if (!isSubscribed) {
+        router.replace("/paywall");
+      }
+    }).catch(() => {
+      if (cancelled) return;
+      const onPaywall = pathname === "/paywall";
+      if (onPaywall) return;
+      if (!isSubscribed) {
+        router.replace("/paywall");
+      }
+    });
+    return () => { cancelled = true; };
+  }, [isSubscribed, loading, pathname]);
+
+  return null;
+}
+
 export default function RootLayout() {
+  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
+  const pathname = usePathname();
+
   const colorScheme = useColorScheme();
   const networkState = useNetworkState();
   const [loaded] = useFonts({
@@ -45,6 +84,12 @@ export default function RootLayout() {
     DMSans_600SemiBold,
     DMSans_700Bold,
   });
+
+  useEffect(() => {
+    isOnboardingComplete().then((complete) => {
+      setOnboardingComplete(complete);
+    });
+  }, [pathname]);
 
   useEffect(() => {
     if (loaded) {
@@ -63,6 +108,10 @@ export default function RootLayout() {
       );
     }
   }, [networkState.isConnected, networkState.isInternetReachable]);
+
+  if (onboardingComplete === null || !loaded) {
+    return null;
+  }
 
   const CustomDefaultTheme: Theme = {
     ...DefaultTheme,
@@ -90,42 +139,49 @@ export default function RootLayout() {
   };
 
   return (
-    <DevErrorBoundary>
-      <StatusBar style="auto" animated />
-      <ThemeProvider
-        value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}
-      >
-        <SafeAreaProvider>
-          <WidgetProvider>
-            <GestureHandlerRootView>
-              <Stack>
-                <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                <Stack.Screen
-                  name="recommendation/[id]"
-                  options={{
-                    headerShown: true,
-                    headerTitle: "Recommendation",
-                    headerBackButtonDisplayMode: "minimal",
-                    headerTransparent: true,
-                    headerBlurEffect: "systemMaterial",
-                  }}
-                />
-                <Stack.Screen
-                  name="campaign/[id]"
-                  options={{
-                    headerShown: true,
-                    headerTitle: "Campaign",
-                    headerBackButtonDisplayMode: "minimal",
-                    headerTransparent: true,
-                    headerBlurEffect: "systemMaterial",
-                  }}
-                />
-              </Stack>
-              <SystemBars style={"auto"} />
-            </GestureHandlerRootView>
-          </WidgetProvider>
-        </SafeAreaProvider>
-      </ThemeProvider>
-    </DevErrorBoundary>
+    <SubscriptionProvider>
+      <DevErrorBoundary>
+        <SubscriptionRedirect />
+        <StatusBar style="auto" animated />
+        <ThemeProvider
+          value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}
+        >
+          <SafeAreaProvider>
+            <WidgetProvider>
+              <GestureHandlerRootView>
+                {onboardingComplete === false && pathname !== "/auth" && pathname !== "/paywall" && pathname !== "/auth-popup" && pathname !== "/auth-callback" && <Redirect href="/onboarding" />}
+
+                <Stack>
+                  <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                  <Stack.Screen name="paywall" options={{ headerShown: false }} />
+                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+                  <Stack.Screen
+                    name="recommendation/[id]"
+                    options={{
+                      headerShown: true,
+                      headerTitle: "Recommendation",
+                      headerBackButtonDisplayMode: "minimal",
+                      headerTransparent: true,
+                      headerBlurEffect: "systemMaterial",
+                    }}
+                  />
+                  <Stack.Screen
+                    name="campaign/[id]"
+                    options={{
+                      headerShown: true,
+                      headerTitle: "Campaign",
+                      headerBackButtonDisplayMode: "minimal",
+                      headerTransparent: true,
+                      headerBlurEffect: "systemMaterial",
+                    }}
+                  />
+                </Stack>
+                <SystemBars style={"auto"} />
+              </GestureHandlerRootView>
+            </WidgetProvider>
+          </SafeAreaProvider>
+        </ThemeProvider>
+      </DevErrorBoundary>
+    </SubscriptionProvider>
   );
 }
