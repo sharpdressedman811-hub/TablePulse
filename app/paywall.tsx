@@ -18,11 +18,18 @@ import {
   Animated,
   Dimensions,
   useColorScheme,
+  Modal,
+  TextInput,
+  KeyboardAvoidingView,
+  Linking,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { PurchasesPackage } from "react-native-purchases";
+import Purchases from "react-native-purchases";
 import { useSubscription } from "@/contexts/SubscriptionContext";
 import { TablePulseColors } from "@/constants/Colors";
 
@@ -317,6 +324,9 @@ export default function PaywallScreen() {
   );
   const [purchasing, setPurchasing] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  const [promoModalVisible, setPromoModalVisible] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplying, setPromoApplying] = useState(false);
 
   const headerOpacity = useRef(new Animated.Value(0)).current;
   const headerTranslate = useRef(new Animated.Value(-12)).current;
@@ -422,6 +432,38 @@ export default function PaywallScreen() {
     setSelectedTierId(tierId);
     if (packages.length > 0) {
       setSelectedPackage(packages[0]);
+    }
+  };
+
+  const handlePromoCodeTap = () => {
+    console.log("[Paywall] 'Have a promo code?' tapped — platform:", Platform.OS);
+    if (Platform.OS === "ios") {
+      console.log("[Paywall] iOS: presenting native code redemption sheet");
+      Purchases.presentCodeRedemptionSheet();
+    } else {
+      setPromoCode("");
+      setPromoModalVisible(true);
+    }
+  };
+
+  const handlePromoApply = async () => {
+    const trimmed = promoCode.trim();
+    console.log("[Paywall] Android promo code apply tapped — code:", trimmed);
+    if (!trimmed) {
+      Alert.alert("Enter a code", "Please enter a promo code before applying.");
+      return;
+    }
+    setPromoApplying(true);
+    try {
+      const playStoreUrl = `https://play.google.com/redeem?code=${encodeURIComponent(trimmed)}`;
+      console.log("[Paywall] Opening Play Store redeem URL:", playStoreUrl);
+      await Linking.openURL(playStoreUrl);
+      setPromoModalVisible(false);
+    } catch (err: any) {
+      console.error("[Paywall] Failed to open Play Store redeem URL:", err);
+      Alert.alert("Could not open Play Store", "Please open the Google Play Store manually to redeem your code.");
+    } finally {
+      setPromoApplying(false);
     }
   };
 
@@ -612,6 +654,20 @@ export default function PaywallScreen() {
             </AnimatedPressable>
           </View>
 
+          {/* Promo code link */}
+          <AnimatedPressable onPress={handlePromoCodeTap}>
+            <View style={styles.promoCodeRow}>
+              <Text
+                style={[
+                  styles.promoCodeText,
+                  { color: colors.primary, fontFamily: "DMSans_500Medium" },
+                ]}
+              >
+                Have a promo code?
+              </Text>
+            </View>
+          </AnimatedPressable>
+
           {/* Legal */}
           <Text
             style={[
@@ -634,6 +690,138 @@ export default function PaywallScreen() {
           <ActivityIndicator size="large" color={colors.primary} />
         </View>
       )}
+
+      {/* Android promo code modal */}
+      <Modal
+        visible={promoModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => {
+          console.log("[Paywall] Android promo modal dismissed");
+          setPromoModalVisible(false);
+        }}
+      >
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.modalOverlay}>
+            <KeyboardAvoidingView
+              behavior={Platform.OS === "ios" ? "padding" : "height"}
+              style={styles.modalKAV}
+            >
+              <TouchableWithoutFeedback>
+                <View
+                  style={[
+                    styles.modalCard,
+                    { backgroundColor: colors.surface, shadowColor: "#000" },
+                  ]}
+                >
+                  {/* Modal header */}
+                  <View style={styles.modalHeader}>
+                    <View style={[styles.modalIconRing, { backgroundColor: colors.primaryMuted }]}>
+                      <Text style={[styles.modalIcon, { color: colors.primary }]}>%</Text>
+                    </View>
+                    <Text
+                      style={[
+                        styles.modalTitle,
+                        { color: colors.text, fontFamily: "DMSans_700Bold" },
+                      ]}
+                    >
+                      Redeem Promo Code
+                    </Text>
+                    <Text
+                      style={[
+                        styles.modalSubtitle,
+                        { color: colors.textSecondary, fontFamily: "DMSans_400Regular" },
+                      ]}
+                    >
+                      Promo codes are applied through the Google Play Store. Enter your code below and tap Apply to open Play Store.
+                    </Text>
+                  </View>
+
+                  {/* Text input */}
+                  <TextInput
+                    style={[
+                      styles.promoInput,
+                      {
+                        backgroundColor: colors.surfaceSecondary,
+                        borderColor: promoCode.length > 0 ? colors.primary : colors.border,
+                        color: colors.text,
+                        fontFamily: "DMSans_400Regular",
+                      },
+                    ]}
+                    placeholder="Enter promo code"
+                    placeholderTextColor={colors.textTertiary}
+                    value={promoCode}
+                    onChangeText={(text) => {
+                      console.log("[Paywall] Promo code input changed:", text);
+                      setPromoCode(text);
+                    }}
+                    autoCapitalize="characters"
+                    autoCorrect={false}
+                    returnKeyType="done"
+                    onSubmitEditing={handlePromoApply}
+                  />
+
+                  {/* Action buttons */}
+                  <View style={styles.modalActions}>
+                    <AnimatedPressable
+                      onPress={() => {
+                        console.log("[Paywall] Android promo modal cancelled");
+                        setPromoModalVisible(false);
+                      }}
+                      style={{ flex: 1 }}
+                    >
+                      <View
+                        style={[
+                          styles.modalCancelButton,
+                          { borderColor: colors.border },
+                        ]}
+                      >
+                        <Text
+                          style={[
+                            styles.modalCancelText,
+                            { color: colors.textSecondary, fontFamily: "DMSans_500Medium" },
+                          ]}
+                        >
+                          Cancel
+                        </Text>
+                      </View>
+                    </AnimatedPressable>
+
+                    <AnimatedPressable
+                      onPress={handlePromoApply}
+                      disabled={promoApplying}
+                      style={{ flex: 1 }}
+                    >
+                      <LinearGradient
+                        colors={["#0D9488", "#0A7A70"]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={[
+                          styles.modalApplyButton,
+                          promoApplying && { opacity: 0.6 },
+                        ]}
+                      >
+                        {promoApplying ? (
+                          <ActivityIndicator color="#fff" size="small" />
+                        ) : (
+                          <Text
+                            style={[
+                              styles.modalApplyText,
+                              { fontFamily: "DMSans_700Bold" },
+                            ]}
+                          >
+                            Apply
+                          </Text>
+                        )}
+                      </LinearGradient>
+                    </AnimatedPressable>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
+            </KeyboardAvoidingView>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 }
@@ -911,5 +1099,95 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "rgba(0,0,0,0.15)",
+  },
+
+  // Promo code link
+  promoCodeRow: {
+    alignItems: "center",
+    paddingVertical: 2,
+  },
+  promoCodeText: {
+    fontSize: 14,
+    textDecorationLine: "underline",
+  },
+
+  // Android promo modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.55)",
+    justifyContent: "flex-end",
+  },
+  modalKAV: {
+    width: "100%",
+  },
+  modalCard: {
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingHorizontal: 24,
+    paddingTop: 28,
+    paddingBottom: 36,
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.12,
+    shadowRadius: 16,
+    elevation: 12,
+    gap: 20,
+  },
+  modalHeader: {
+    alignItems: "center",
+    gap: 10,
+  },
+  modalIconRing: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  modalIcon: {
+    fontSize: 22,
+    fontWeight: "700",
+  },
+  modalTitle: {
+    fontSize: 20,
+    letterSpacing: -0.3,
+    textAlign: "center",
+  },
+  modalSubtitle: {
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: "center",
+  },
+  promoInput: {
+    height: 50,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    letterSpacing: 1,
+  },
+  modalActions: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  modalCancelButton: {
+    height: 50,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalCancelText: {
+    fontSize: 15,
+  },
+  modalApplyButton: {
+    height: 50,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalApplyText: {
+    fontSize: 15,
+    color: "#fff",
   },
 });
