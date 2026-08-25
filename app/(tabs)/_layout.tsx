@@ -2,7 +2,9 @@ import React from 'react';
 import { View } from 'react-native';
 import { Stack } from 'expo-router';
 import FloatingTabBar, { TabBarItem } from '@/components/FloatingTabBar';
+import SidebarNav from '@/components/SidebarNav';
 import { useColors } from '@/hooks/useColors';
+import { useLayout } from '@/hooks/useLayout';
 
 const TABS: TabBarItem[] = [
   { name: 'command-center', route: '/(tabs)/command-center', icon: 'home', label: 'Home' },
@@ -14,22 +16,38 @@ const TABS: TabBarItem[] = [
 
 export default function TabLayout() {
   const colors = useColors();
+  const { isTablet } = useLayout();
+
+  const stackContent = (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        animation: 'none',
+        contentStyle: { backgroundColor: colors.background },
+      }}
+    >
+      <Stack.Screen name="command-center" />
+      <Stack.Screen name="action-plan" />
+      <Stack.Screen name="revenue" />
+      <Stack.Screen name="labor" />
+      <Stack.Screen name="marketing" />
+    </Stack>
+  );
+
+  if (isTablet) {
+    return (
+      <View style={{ flex: 1, flexDirection: 'row', backgroundColor: colors.background }}>
+        <SidebarNav tabs={TABS} />
+        <View style={{ flex: 1 }}>
+          {stackContent}
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-          animation: 'none',
-          contentStyle: { backgroundColor: colors.background },
-        }}
-      >
-        <Stack.Screen name="command-center" />
-        <Stack.Screen name="action-plan" />
-        <Stack.Screen name="revenue" />
-        <Stack.Screen name="labor" />
-        <Stack.Screen name="marketing" />
-      </Stack>
+      {stackContent}
       <FloatingTabBar
         tabs={TABS}
         containerWidth={340}

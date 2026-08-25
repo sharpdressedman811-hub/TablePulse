@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, ScrollView, Animated } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useColors } from '@/hooks/useColors';
+import { useLayout } from '@/hooks/useLayout';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { AI_RECOMMENDATIONS } from '@/data/mockRestaurant';
 import { TrendingUp, AlertTriangle, ChevronLeft } from 'lucide-react-native';
@@ -53,7 +54,11 @@ export default function RecommendationDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const router = useRouter();
+  const { isTablet, isLargeTablet } = useLayout();
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const contentMaxWidth = isLargeTablet ? 900 : isTablet ? 720 : undefined;
+  const horizontalPadding = isTablet ? 32 : 16;
 
   const rec = AI_RECOMMENDATIONS.find((r) => r.id === id);
 
@@ -87,7 +92,14 @@ export default function RecommendationDetailScreen() {
       <Animated.ScrollView
         style={{ flex: 1, backgroundColor: colors.background, opacity: fadeAnim }}
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 60, gap: 16 }}
+        contentContainerStyle={{
+            paddingHorizontal: horizontalPadding,
+            paddingBottom: 60,
+            gap: 16,
+            maxWidth: contentMaxWidth,
+            alignSelf: contentMaxWidth ? 'center' : undefined,
+            width: contentMaxWidth ? '100%' : undefined,
+          }}
         showsVerticalScrollIndicator={false}
       >
         {/* Priority + type header */}

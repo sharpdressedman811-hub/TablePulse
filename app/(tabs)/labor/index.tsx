@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/useColors';
+import { useLayout } from '@/hooks/useLayout';
 import { RecommendationCard } from '@/components/RecommendationCard';
 import { BarChart } from '@/components/BarChart';
 import { SkeletonScreen } from '@/components/SkeletonLoader';
@@ -46,8 +47,13 @@ function SectionTitle({ title }: { title: string }) {
 export default function LaborScreen() {
   const colors = useColors();
   const router = useRouter();
+  const { isTablet, isLargeTablet } = useLayout();
   const [loading, setLoading] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const contentMaxWidth = isLargeTablet ? 900 : isTablet ? 720 : undefined;
+  const horizontalPadding = isTablet ? 32 : 16;
+  const paddingBottom = isTablet ? 60 : 120;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -99,7 +105,14 @@ export default function LaborScreen() {
     <Animated.ScrollView
       style={{ flex: 1, backgroundColor: colors.background, opacity: fadeAnim }}
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 20 }}
+      contentContainerStyle={{
+          paddingHorizontal: horizontalPadding,
+          paddingBottom: paddingBottom,
+          gap: 20,
+          maxWidth: contentMaxWidth,
+          alignSelf: contentMaxWidth ? 'center' : undefined,
+          width: contentMaxWidth ? '100%' : undefined,
+        }}
       showsVerticalScrollIndicator={false}
     >
       {/* Labor health card */}
@@ -276,58 +289,99 @@ export default function LaborScreen() {
         </View>
       </AnimatedListItem>
 
-      {/* Staff breakdown table */}
+      {/* Staff breakdown table + Tonight's forecast: side-by-side on large-tablet */}
       <AnimatedListItem index={3}>
-        <View
-          style={{
-            backgroundColor: colors.surface,
-            borderRadius: 16,
-            padding: 16,
-            borderWidth: 1,
-            borderColor: colors.border,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-            gap: 12,
-          }}
-        >
-          <SectionTitle title="By Role" />
+        <View style={{ flexDirection: isLargeTablet ? 'row' : 'column', gap: 16, alignItems: 'flex-start' }}>
+          <View
+            style={{
+              flex: isLargeTablet ? 1 : undefined,
+              backgroundColor: colors.surface,
+              borderRadius: 16,
+              padding: 16,
+              borderWidth: 1,
+              borderColor: colors.border,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+              gap: 12,
+            }}
+          >
+            <SectionTitle title="By Role" />
 
-          {/* Header row */}
-          <View style={{ flexDirection: 'row', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: colors.divider }}>
-            <Text style={{ flex: 2, fontSize: 11, fontWeight: '600', color: colors.textTertiary, fontFamily: 'DMSans_600SemiBold', textTransform: 'uppercase', letterSpacing: 0.4 }}>Role</Text>
-            <Text style={{ width: 60, fontSize: 11, fontWeight: '600', color: colors.textTertiary, fontFamily: 'DMSans_600SemiBold', textTransform: 'uppercase', letterSpacing: 0.4, textAlign: 'center' }}>Sched</Text>
-            <Text style={{ width: 60, fontSize: 11, fontWeight: '600', color: colors.textTertiary, fontFamily: 'DMSans_600SemiBold', textTransform: 'uppercase', letterSpacing: 0.4, textAlign: 'center' }}>Actual</Text>
-            <Text style={{ width: 50, fontSize: 11, fontWeight: '600', color: colors.textTertiary, fontFamily: 'DMSans_600SemiBold', textTransform: 'uppercase', letterSpacing: 0.4, textAlign: 'right' }}>Hrs</Text>
+            {/* Header row */}
+            <View style={{ flexDirection: 'row', paddingBottom: 8, borderBottomWidth: 1, borderBottomColor: colors.divider }}>
+              <Text style={{ flex: 2, fontSize: 11, fontWeight: '600', color: colors.textTertiary, fontFamily: 'DMSans_600SemiBold', textTransform: 'uppercase', letterSpacing: 0.4 }}>Role</Text>
+              <Text style={{ width: 60, fontSize: 11, fontWeight: '600', color: colors.textTertiary, fontFamily: 'DMSans_600SemiBold', textTransform: 'uppercase', letterSpacing: 0.4, textAlign: 'center' }}>Sched</Text>
+              <Text style={{ width: 60, fontSize: 11, fontWeight: '600', color: colors.textTertiary, fontFamily: 'DMSans_600SemiBold', textTransform: 'uppercase', letterSpacing: 0.4, textAlign: 'center' }}>Actual</Text>
+              <Text style={{ width: 50, fontSize: 11, fontWeight: '600', color: colors.textTertiary, fontFamily: 'DMSans_600SemiBold', textTransform: 'uppercase', letterSpacing: 0.4, textAlign: 'right' }}>Hrs</Text>
+            </View>
+
+            {LABOR_DATA.scheduled.map((row, i) => {
+              const diff = row.actual - row.scheduled;
+              const actualColor = diff === 0 ? colors.primary : diff < 0 ? (diff === -1 ? colors.accent : colors.danger) : colors.primary;
+              return (
+                <View
+                  key={row.role}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingVertical: 6,
+                    borderTopWidth: i > 0 ? 1 : 0,
+                    borderTopColor: colors.divider,
+                  }}
+                >
+                  <Text style={{ flex: 2, fontSize: 14, color: colors.text, fontFamily: 'DMSans_400Regular' }} numberOfLines={1}>
+                    {row.role}
+                  </Text>
+                  <Text style={{ width: 60, fontSize: 14, color: colors.textSecondary, fontFamily: 'DMSans_400Regular', textAlign: 'center', fontVariant: ['tabular-nums'] }}>
+                    {row.scheduled}
+                  </Text>
+                  <Text style={{ width: 60, fontSize: 14, fontWeight: '600', color: actualColor, fontFamily: 'DMSans_600SemiBold', textAlign: 'center', fontVariant: ['tabular-nums'] }}>
+                    {row.actual}
+                  </Text>
+                  <Text style={{ width: 50, fontSize: 14, color: colors.textSecondary, fontFamily: 'DMSans_400Regular', textAlign: 'right', fontVariant: ['tabular-nums'] }}>
+                    {row.hoursWorked.toFixed(1)}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
 
-          {LABOR_DATA.scheduled.map((row, i) => {
-            const diff = row.actual - row.scheduled;
-            const actualColor = diff === 0 ? colors.primary : diff < 0 ? (diff === -1 ? colors.accent : colors.danger) : colors.primary;
-            return (
-              <View
-                key={row.role}
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  paddingVertical: 6,
-                  borderTopWidth: i > 0 ? 1 : 0,
-                  borderTopColor: colors.divider,
-                }}
-              >
-                <Text style={{ flex: 2, fontSize: 14, color: colors.text, fontFamily: 'DMSans_400Regular' }} numberOfLines={1}>
-                  {row.role}
-                </Text>
-                <Text style={{ width: 60, fontSize: 14, color: colors.textSecondary, fontFamily: 'DMSans_400Regular', textAlign: 'center', fontVariant: ['tabular-nums'] }}>
-                  {row.scheduled}
-                </Text>
-                <Text style={{ width: 60, fontSize: 14, fontWeight: '600', color: actualColor, fontFamily: 'DMSans_600SemiBold', textAlign: 'center', fontVariant: ['tabular-nums'] }}>
-                  {row.actual}
-                </Text>
-                <Text style={{ width: 50, fontSize: 14, color: colors.textSecondary, fontFamily: 'DMSans_400Regular', textAlign: 'right', fontVariant: ['tabular-nums'] }}>
-                  {row.hoursWorked.toFixed(1)}
-                </Text>
+          {/* Tonight's forecast chart — inline on large-tablet */}
+          {isLargeTablet && (
+            <View
+              style={{
+                flex: 1,
+                backgroundColor: colors.surface,
+                borderRadius: 16,
+                padding: 16,
+                borderWidth: 1,
+                borderColor: colors.border,
+                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                gap: 12,
+              }}
+            >
+              <SectionTitle title="Tonight's Forecast" />
+              <Text style={{ fontSize: 13, color: colors.textSecondary, fontFamily: 'DMSans_400Regular' }}>
+                Projected covers by hour (5PM–10PM)
+              </Text>
+              <BarChart
+                data={forecastData}
+                height={120}
+                color={colors.primary}
+                showBaseline={false}
+                showProjected={true}
+              />
+              <View style={{ flexDirection: 'row', gap: 12 }}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary }} />
+                  <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Actual</Text>
+                </View>
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                  <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary, opacity: 0.3 }} />
+                  <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Projected</Text>
+                </View>
               </View>
-            );
-          })}
+            </View>
+          )}
         </View>
       </AnimatedListItem>
 
@@ -382,42 +436,44 @@ export default function LaborScreen() {
         </View>
       </AnimatedListItem>
 
-      {/* Tonight's forecast chart */}
-      <AnimatedListItem index={5}>
-        <View
-          style={{
-            backgroundColor: colors.surface,
-            borderRadius: 16,
-            padding: 16,
-            borderWidth: 1,
-            borderColor: colors.border,
-            boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-            gap: 12,
-          }}
-        >
-          <SectionTitle title="Tonight's Forecast" />
-          <Text style={{ fontSize: 13, color: colors.textSecondary, fontFamily: 'DMSans_400Regular' }}>
-            Projected covers by hour (5PM–10PM)
-          </Text>
-          <BarChart
-            data={forecastData}
-            height={120}
-            color={colors.primary}
-            showBaseline={false}
-            showProjected={true}
-          />
-          <View style={{ flexDirection: 'row', gap: 12 }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary }} />
-              <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Actual</Text>
-            </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary, opacity: 0.3 }} />
-              <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Projected</Text>
+      {/* Tonight's forecast chart — only shown standalone on non-large-tablet */}
+      {!isLargeTablet && (
+        <AnimatedListItem index={5}>
+          <View
+            style={{
+              backgroundColor: colors.surface,
+              borderRadius: 16,
+              padding: 16,
+              borderWidth: 1,
+              borderColor: colors.border,
+              boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+              gap: 12,
+            }}
+          >
+            <SectionTitle title="Tonight's Forecast" />
+            <Text style={{ fontSize: 13, color: colors.textSecondary, fontFamily: 'DMSans_400Regular' }}>
+              Projected covers by hour (5PM–10PM)
+            </Text>
+            <BarChart
+              data={forecastData}
+              height={120}
+              color={colors.primary}
+              showBaseline={false}
+              showProjected={true}
+            />
+            <View style={{ flexDirection: 'row', gap: 12 }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary }} />
+                <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Actual</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary, opacity: 0.3 }} />
+                <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Projected</Text>
+              </View>
             </View>
           </View>
-        </View>
-      </AnimatedListItem>
+        </AnimatedListItem>
+      )}
 
       {/* Labor recommendations */}
       {laborRecs.length > 0 && (

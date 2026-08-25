@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/useColors';
+import { useLayout } from '@/hooks/useLayout';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { MetricCard } from '@/components/MetricCard';
 import { RecommendationCard } from '@/components/RecommendationCard';
@@ -49,8 +50,13 @@ function AnimatedListItem({ index, children }: { index: number; children: React.
 export default function CommandCenterScreen() {
   const colors = useColors();
   const router = useRouter();
+  const { isTablet, isLargeTablet } = useLayout();
   const [loading, setLoading] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const contentMaxWidth = isLargeTablet ? 900 : isTablet ? 720 : undefined;
+  const horizontalPadding = isTablet ? 32 : 16;
+  const paddingBottom = isTablet ? 60 : 120;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -90,7 +96,14 @@ export default function CommandCenterScreen() {
     <Animated.ScrollView
       style={{ flex: 1, backgroundColor: colors.background, opacity: fadeAnim }}
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 20 }}
+      contentContainerStyle={{
+          paddingHorizontal: horizontalPadding,
+          paddingBottom: paddingBottom,
+          gap: 20,
+          maxWidth: contentMaxWidth,
+          alignSelf: contentMaxWidth ? 'center' : undefined,
+          width: contentMaxWidth ? '100%' : undefined,
+        }}
       showsVerticalScrollIndicator={false}
     >
       {/* Header */}
@@ -182,8 +195,8 @@ export default function CommandCenterScreen() {
             Today's Brief
           </Text>
 
-          {/* 2x2 metrics grid */}
-          <View style={{ flexDirection: 'row', gap: 16, marginBottom: 16 }}>
+          {/* metrics grid: 2x2 on phone, 4-column on tablet */}
+          <View style={{ flexDirection: 'row', flexWrap: isTablet ? 'nowrap' : 'wrap', gap: 16, marginBottom: 16 }}>
             <View style={{ flex: 1 }}>
               <Text
                 style={{
@@ -231,9 +244,6 @@ export default function CommandCenterScreen() {
                 {revenueVsNormalText.split(' ')[0]}
               </Text>
             </View>
-          </View>
-
-          <View style={{ flexDirection: 'row', gap: 16, marginBottom: 16 }}>
             <View style={{ flex: 1 }}>
               <Text
                 style={{
@@ -599,7 +609,7 @@ export default function CommandCenterScreen() {
           >
             Key Metrics
           </Text>
-          <View style={{ flexDirection: 'row', gap: 10 }}>
+          <View style={{ flexDirection: 'row', flexWrap: isTablet ? 'nowrap' : 'wrap', gap: 10 }}>
             <MetricCard
               label="Avg Check"
               value="$58.03"
@@ -611,8 +621,6 @@ export default function CommandCenterScreen() {
               value="142"
               subtext="of 236 projected"
             />
-          </View>
-          <View style={{ flexDirection: 'row', gap: 10 }}>
             <MetricCard
               label="Reservations"
               value="87"

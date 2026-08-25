@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Animated, TouchableOpacity } from 'react-native';
 import { useColors } from '@/hooks/useColors';
+import { useLayout } from '@/hooks/useLayout';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { BarChart } from '@/components/BarChart';
 import { SkeletonScreen } from '@/components/SkeletonLoader';
@@ -52,9 +53,14 @@ function SectionTitle({ title }: { title: string }) {
 
 export default function RevenueScreen() {
   const colors = useColors();
+  const { isTablet, isLargeTablet } = useLayout();
   const [period, setPeriod] = useState<Period>('today');
   const [loading, setLoading] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const contentMaxWidth = isLargeTablet ? 900 : isTablet ? 720 : undefined;
+  const horizontalPadding = isTablet ? 32 : 16;
+  const paddingBottom = isTablet ? 60 : 120;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -109,7 +115,14 @@ export default function RevenueScreen() {
     <Animated.ScrollView
       style={{ flex: 1, backgroundColor: colors.background, opacity: fadeAnim }}
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 20 }}
+      contentContainerStyle={{
+          paddingHorizontal: horizontalPadding,
+          paddingBottom: paddingBottom,
+          gap: 20,
+          maxWidth: contentMaxWidth,
+          alignSelf: contentMaxWidth ? 'center' : undefined,
+          width: contentMaxWidth ? '100%' : undefined,
+        }}
       showsVerticalScrollIndicator={false}
     >
       {/* Period selector */}
@@ -229,41 +242,99 @@ export default function RevenueScreen() {
             </View>
           </AnimatedListItem>
 
-          {/* Hourly bar chart */}
+          {/* Hourly bar chart + Avg check: side-by-side on large-tablet */}
           <AnimatedListItem index={2}>
-            <View
-              style={{
-                backgroundColor: colors.surface,
-                borderRadius: 16,
-                padding: 16,
-                borderWidth: 1,
-                borderColor: colors.border,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-                gap: 12,
-              }}
-            >
-              <SectionTitle title="Hourly Revenue" />
-              <BarChart
-                data={hourlyChartData}
-                height={140}
-                color={colors.primary}
-                showBaseline={true}
-                showProjected={true}
-              />
-              <View style={{ flexDirection: 'row', gap: 12, flexWrap: 'wrap' }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary }} />
-                  <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Actual</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary, opacity: 0.3 }} />
-                  <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Projected</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <View style={{ width: 10, height: 2, backgroundColor: colors.accent, opacity: 0.7 }} />
-                  <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Baseline</Text>
+            <View style={{ flexDirection: isLargeTablet ? 'row' : 'column', gap: 16 }}>
+              <View
+                style={{
+                  flex: isLargeTablet ? 1 : undefined,
+                  backgroundColor: colors.surface,
+                  borderRadius: 16,
+                  padding: 16,
+                  borderWidth: 1,
+                  borderColor: colors.border,
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                  gap: 12,
+                }}
+              >
+                <SectionTitle title="Hourly Revenue" />
+                <BarChart
+                  data={hourlyChartData}
+                  height={140}
+                  color={colors.primary}
+                  showBaseline={true}
+                  showProjected={true}
+                />
+                <View style={{ flexDirection: 'row', gap: 12, flexWrap: 'wrap' }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary }} />
+                    <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Actual</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary, opacity: 0.3 }} />
+                    <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Projected</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <View style={{ width: 10, height: 2, backgroundColor: colors.accent, opacity: 0.7 }} />
+                    <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>Baseline</Text>
+                  </View>
                 </View>
               </View>
+
+              {/* Avg check — inline on large-tablet, separate item on smaller */}
+              {isLargeTablet && (
+                <View
+                  style={{
+                    flex: 1,
+                    backgroundColor: colors.surface,
+                    borderRadius: 16,
+                    padding: 16,
+                    borderWidth: 1,
+                    borderColor: colors.border,
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                    gap: 10,
+                  }}
+                >
+                  <SectionTitle title="Average Check" />
+                  <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8 }}>
+                    <Text
+                      style={{
+                        fontSize: 28,
+                        fontWeight: '700',
+                        color: colors.text,
+                        fontFamily: 'DMSans_700Bold',
+                        letterSpacing: -0.3,
+                        fontVariant: ['tabular-nums'],
+                      }}
+                    >
+                      $58.03
+                    </Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 4 }}>
+                      <TrendingUp size={14} color={colors.primary} />
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          fontWeight: '600',
+                          color: colors.primary,
+                          fontFamily: 'DMSans_600SemiBold',
+                        }}
+                      >
+                        +2.1% vs normal
+                      </Text>
+                    </View>
+                  </View>
+                  <BarChart
+                    data={avgCheckSparkData}
+                    height={60}
+                    color={colors.primary}
+                    showBaseline={false}
+                    showProjected={false}
+                  />
+                  <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>
+                    Last 7 days
+                  </Text>
+                </View>
+              )}
             </View>
           </AnimatedListItem>
 
@@ -370,100 +441,110 @@ export default function RevenueScreen() {
             </View>
           </AnimatedListItem>
 
-          {/* Avg check */}
-          <AnimatedListItem index={4}>
-            <View
-              style={{
-                backgroundColor: colors.surface,
-                borderRadius: 16,
-                padding: 16,
-                borderWidth: 1,
-                borderColor: colors.border,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-                gap: 10,
-              }}
-            >
-              <SectionTitle title="Average Check" />
-              <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8 }}>
-                <Text
-                  style={{
-                    fontSize: 28,
-                    fontWeight: '700',
-                    color: colors.text,
-                    fontFamily: 'DMSans_700Bold',
-                    letterSpacing: -0.3,
-                    fontVariant: ['tabular-nums'],
-                  }}
-                >
-                  $58.03
-                </Text>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 4 }}>
-                  <TrendingUp size={14} color={colors.primary} />
-                  <Text
-                    style={{
-                      fontSize: 13,
-                      fontWeight: '600',
-                      color: colors.primary,
-                      fontFamily: 'DMSans_600SemiBold',
-                    }}
-                  >
-                    +2.1% vs normal
-                  </Text>
-                </View>
-              </View>
-              <BarChart
-                data={avgCheckSparkData}
-                height={60}
-                color={colors.primary}
-                showBaseline={false}
-                showProjected={false}
-              />
-              <Text
+          {/* Avg check — only shown standalone on non-large-tablet */}
+          {!isLargeTablet && (
+            <AnimatedListItem index={4}>
+              <View
                 style={{
-                  fontSize: 11,
-                  color: colors.textTertiary,
-                  fontFamily: 'DMSans_400Regular',
+                  backgroundColor: colors.surface,
+                  borderRadius: 16,
+                  padding: 16,
+                  borderWidth: 1,
+                  borderColor: colors.border,
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                  gap: 10,
                 }}
               >
-                Last 7 days
-              </Text>
-            </View>
-          </AnimatedListItem>
+                <SectionTitle title="Average Check" />
+                <View style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 8 }}>
+                  <Text
+                    style={{
+                      fontSize: 28,
+                      fontWeight: '700',
+                      color: colors.text,
+                      fontFamily: 'DMSans_700Bold',
+                      letterSpacing: -0.3,
+                      fontVariant: ['tabular-nums'],
+                    }}
+                  >
+                    $58.03
+                  </Text>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 4 }}>
+                    <TrendingUp size={14} color={colors.primary} />
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        fontWeight: '600',
+                        color: colors.primary,
+                        fontFamily: 'DMSans_600SemiBold',
+                      }}
+                    >
+                      +2.1% vs normal
+                    </Text>
+                  </View>
+                </View>
+                <BarChart
+                  data={avgCheckSparkData}
+                  height={60}
+                  color={colors.primary}
+                  showBaseline={false}
+                  showProjected={false}
+                />
+                <Text
+                  style={{
+                    fontSize: 11,
+                    color: colors.textTertiary,
+                    fontFamily: 'DMSans_400Regular',
+                  }}
+                >
+                  Last 7 days
+                </Text>
+              </View>
+            </AnimatedListItem>
+          )}
         </>
       )}
 
       {period === 'week' && (
         <>
           <AnimatedListItem index={1}>
-            <View
-              style={{
-                backgroundColor: colors.surface,
-                borderRadius: 16,
-                padding: 16,
-                borderWidth: 1,
-                borderColor: colors.border,
-                boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
-                gap: 12,
-              }}
-            >
-              <SectionTitle title="This Week vs. Average" />
-              <BarChart
-                data={dowChartData}
-                height={160}
-                color={colors.primary}
-                showBaseline={true}
-                showProjected={false}
-              />
-              <View style={{ flexDirection: 'row', gap: 12 }}>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary }} />
-                  <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>This Week</Text>
-                </View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                  <View style={{ width: 10, height: 2, backgroundColor: colors.accent, opacity: 0.7 }} />
-                  <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>4-Week Avg</Text>
+            <View style={{ flexDirection: isLargeTablet ? 'row' : 'column', gap: 16 }}>
+              <View
+                style={{
+                  flex: isLargeTablet ? 1 : undefined,
+                  backgroundColor: colors.surface,
+                  borderRadius: 16,
+                  padding: 16,
+                  borderWidth: 1,
+                  borderColor: colors.border,
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+                  gap: 12,
+                }}
+              >
+                <SectionTitle title="This Week vs. Average" />
+                <BarChart
+                  data={dowChartData}
+                  height={160}
+                  color={colors.primary}
+                  showBaseline={true}
+                  showProjected={false}
+                />
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <View style={{ width: 10, height: 10, borderRadius: 2, backgroundColor: colors.primary }} />
+                    <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>This Week</Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                    <View style={{ width: 10, height: 2, backgroundColor: colors.accent, opacity: 0.7 }} />
+                    <Text style={{ fontSize: 11, color: colors.textTertiary, fontFamily: 'DMSans_400Regular' }}>4-Week Avg</Text>
+                  </View>
                 </View>
               </View>
+              {isLargeTablet && (
+                <View style={{ flex: 1 }}>
+                  {/* spacer placeholder so the chart doesn't stretch full width */}
+                </View>
+              )}
             </View>
           </AnimatedListItem>
 

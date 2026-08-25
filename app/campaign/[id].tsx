@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Animated, TextInput } from 'react-native';
 import { useLocalSearchParams, useRouter, Stack } from 'expo-router';
 import { useColors } from '@/hooks/useColors';
+import { useLayout } from '@/hooks/useLayout';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { StatusBadge } from '@/components/StatusBadge';
 import { CAMPAIGNS } from '@/data/mockRestaurant';
@@ -56,7 +57,11 @@ export default function CampaignScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const colors = useColors();
   const router = useRouter();
+  const { isTablet, isLargeTablet } = useLayout();
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const contentMaxWidth = isLargeTablet ? 900 : isTablet ? 720 : undefined;
+  const horizontalPadding = isTablet ? 32 : 16;
 
   const isNew = id === 'new';
   const existingCampaign = isNew ? null : CAMPAIGNS.find((c) => c.id === id);
@@ -98,7 +103,14 @@ export default function CampaignScreen() {
         <Animated.ScrollView
           style={{ flex: 1, backgroundColor: colors.background, opacity: fadeAnim }}
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 60, gap: 16 }}
+          contentContainerStyle={{
+            paddingHorizontal: horizontalPadding,
+            paddingBottom: 60,
+            gap: 16,
+            maxWidth: contentMaxWidth,
+            alignSelf: contentMaxWidth ? 'center' : undefined,
+            width: contentMaxWidth ? '100%' : undefined,
+          }}
           showsVerticalScrollIndicator={false}
         >
           {/* Status + meta */}
@@ -255,7 +267,14 @@ export default function CampaignScreen() {
       <Animated.ScrollView
         style={{ flex: 1, backgroundColor: colors.background, opacity: fadeAnim }}
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 60, gap: 16 }}
+        contentContainerStyle={{
+          paddingHorizontal: horizontalPadding,
+          paddingBottom: 60,
+          gap: 16,
+          maxWidth: contentMaxWidth,
+          alignSelf: contentMaxWidth ? 'center' : undefined,
+          width: contentMaxWidth ? '100%' : undefined,
+        }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/useColors';
+import { useLayout } from '@/hooks/useLayout';
 import { RecommendationCard } from '@/components/RecommendationCard';
 import { SkeletonScreen } from '@/components/SkeletonLoader';
 import { AI_RECOMMENDATIONS, TODAY_METRICS } from '@/data/mockRestaurant';
@@ -28,8 +29,13 @@ function AnimatedListItem({ index, children }: { index: number; children: React.
 export default function ActionPlanScreen() {
   const colors = useColors();
   const router = useRouter();
+  const { isTablet, isLargeTablet } = useLayout();
   const [loading, setLoading] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const contentMaxWidth = isLargeTablet ? 900 : isTablet ? 720 : undefined;
+  const horizontalPadding = isTablet ? 32 : 16;
+  const paddingBottom = isTablet ? 60 : 120;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -56,7 +62,14 @@ export default function ActionPlanScreen() {
     <Animated.ScrollView
       style={{ flex: 1, backgroundColor: colors.background, opacity: fadeAnim }}
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 16 }}
+      contentContainerStyle={{
+          paddingHorizontal: horizontalPadding,
+          paddingBottom: paddingBottom,
+          gap: 16,
+          maxWidth: contentMaxWidth,
+          alignSelf: contentMaxWidth ? 'center' : undefined,
+          width: contentMaxWidth ? '100%' : undefined,
+        }}
       showsVerticalScrollIndicator={false}
     >
       {/* Subtitle */}

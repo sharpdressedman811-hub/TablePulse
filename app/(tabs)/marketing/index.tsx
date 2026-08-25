@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, ScrollView, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/useColors';
+import { useLayout } from '@/hooks/useLayout';
 import { AnimatedPressable } from '@/components/AnimatedPressable';
 import { StatusBadge } from '@/components/StatusBadge';
 import { SkeletonScreen } from '@/components/SkeletonLoader';
@@ -81,8 +82,13 @@ function ChannelChip({ channel }: { channel: string }) {
 export default function MarketingScreen() {
   const colors = useColors();
   const router = useRouter();
+  const { isTablet, isLargeTablet } = useLayout();
   const [loading, setLoading] = useState(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const contentMaxWidth = isLargeTablet ? 900 : isTablet ? 720 : undefined;
+  const horizontalPadding = isTablet ? 32 : 16;
+  const paddingBottom = isTablet ? 60 : 120;
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -107,7 +113,14 @@ export default function MarketingScreen() {
     <Animated.ScrollView
       style={{ flex: 1, backgroundColor: colors.background, opacity: fadeAnim }}
       contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120, gap: 20 }}
+      contentContainerStyle={{
+          paddingHorizontal: horizontalPadding,
+          paddingBottom: paddingBottom,
+          gap: 20,
+          maxWidth: contentMaxWidth,
+          alignSelf: contentMaxWidth ? 'center' : undefined,
+          width: contentMaxWidth ? '100%' : undefined,
+        }}
       showsVerticalScrollIndicator={false}
     >
       {/* Opportunity spotlight */}
