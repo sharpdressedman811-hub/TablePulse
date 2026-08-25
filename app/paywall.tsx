@@ -44,7 +44,7 @@ const TIERS: Tier[] = [
   {
     id: "starter",
     name: "STARTER",
-    price: "$49",
+    price: "$299",
     period: "/month",
     tagline: "Essential insights for growing restaurants",
     popular: false,
@@ -59,7 +59,7 @@ const TIERS: Tier[] = [
   {
     id: "intelligence",
     name: "INTELLIGENCE",
-    price: "$149",
+    price: "$399",
     period: "/month",
     tagline: "Full AI power for serious operators",
     popular: true,
@@ -75,7 +75,7 @@ const TIERS: Tier[] = [
   {
     id: "growth",
     name: "GROWTH",
-    price: "$299",
+    price: "$449",
     period: "/month",
     tagline: "Enterprise-grade for multi-location groups",
     popular: false,
