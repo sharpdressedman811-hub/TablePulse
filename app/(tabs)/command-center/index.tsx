@@ -28,6 +28,7 @@ import {
   ChevronRight,
   Wifi,
 } from 'lucide-react-native';
+import { resetOnboarding } from '@/utils/onboardingStorage';
 
 function AnimatedListItem({ index, children }: { index: number; children: React.ReactNode }) {
   const opacity = useRef(new Animated.Value(0)).current;
@@ -748,6 +749,28 @@ export default function CommandCenterScreen() {
             Mock data — connect real integrations in Settings
           </Text>
         </View>
+      </AnimatedListItem>
+
+      {/* Reset / Start Over */}
+      <AnimatedListItem index={8}>
+        <TouchableOpacity
+          onPress={async () => {
+            console.log('[CommandCenter] Reset & restart onboarding pressed');
+            await resetOnboarding();
+            router.replace('/onboarding');
+          }}
+          style={{ alignItems: 'center', paddingVertical: 16, paddingBottom: 8 }}
+        >
+          <Text
+            style={{
+              fontSize: 13,
+              color: colors.textTertiary,
+              fontFamily: 'DMSans_400Regular',
+            }}
+          >
+            Reset &amp; restart onboarding
+          </Text>
+        </TouchableOpacity>
       </AnimatedListItem>
     </Animated.ScrollView>
   );
