@@ -652,3 +652,676 @@ Build the smallest product that proves restaurant owners will pay for the first 
 Think like a founder. Think like a CTO. Think like a restaurant owner. Think like an investor.
 
 Challenge. Verify. Build intelligently. Optimize for a real company, not a demo.
+
+## Phase 13 — Pre-Launch Strategic Controls (Section 37)
+
+Before writing substantial production code, treat this as a venture validation exercise, not merely a software project.
+
+The goal is not to prove that TablePulse can be built. The goal is to prove that TablePulse **should** be built.
+
+---
+
+## Phase 14 — The Kill / Pivot / Build Test (Section 38)
+
+After completing competitive research, classify the proposed product as:
+
+| Verdict | Meaning |
+|---|---|
+| **BUILD** | Strong market opportunity with meaningful differentiation |
+| **PIVOT** | Market opportunity exists, but current positioning is too crowded |
+| **KILL** | Insufficient customer value, impossible economics, excessive competition, or no defensible advantage |
+
+Do not recommend BUILD merely because the technology is feasible. Explain the evidence behind the decision.
+
+---
+
+## Phase 15 — Customer Problem Validation (Section 39)
+
+Identify the 10 most expensive or frustrating problems experienced by independent restaurant operators.
+
+Rank each by:
+- Frequency
+- Financial impact
+- Urgency
+- Existing solutions
+- Willingness to pay
+- Ease of demonstrating ROI
+
+Then determine whether TablePulse is solving a **"Nice to have"** or **"Need to have"**. The MVP should focus on the latter.
+
+---
+
+## Phase 16 — ROI-First Product Design (Section 40)
+
+Every major feature should answer:
+
+> "How can this feature make or save the restaurant money?"
+
+For every proposed feature calculate, where possible:
+- Revenue potential
+- Cost savings
+- Time savings
+- Implementation cost
+- Estimated customer ROI
+- Confidence
+
+Do not build features simply because they are technically interesting.
+
+---
+
+## Phase 17 — The Revenue Opportunity Score (Section 41)
+
+Create a proprietary TablePulse metric called the **Revenue Opportunity Score**.
+
+Potential factors:
+- Historical performance
+- Current demand
+- Capacity
+- Customer behavior
+- Reservations
+- Labor
+- Inventory
+- Weather
+- Events
+- Marketing response
+- Margin
+
+Produce a score from 0–100.
+
+Example:
+
+```
+Revenue Opportunity Score: 87
+"The restaurant has a high-confidence opportunity to increase revenue during Tuesday 3–5 PM."
+```
+
+Do not imply the score is scientifically validated until sufficient historical data exists. Clearly label it as a proprietary analytical score.
+
+---
+
+## Phase 18 — Confidence Engine (Section 42)
+
+Every AI recommendation must have a confidence level:
+
+| Level | Meaning |
+|---|---|
+| **HIGH** | Strong historical evidence and multiple supporting signals |
+| **MEDIUM** | Reasonable evidence but significant uncertainty |
+| **LOW** | Insufficient evidence |
+
+Do not make high-confidence claims from weak data. The system should be allowed to say: **"Insufficient data to make a recommendation."** This is preferable to hallucinating.
+
+---
+
+## Phase 19 — Human-in-the-Loop (Section 43)
+
+Initially, TablePulse should be:
+
+**AI RECOMMENDATION + HUMAN APPROVAL** — not FULLY AUTONOMOUS.
+
+Require approval for:
+- Marketing campaigns
+- Pricing changes
+- Customer communications
+- Staffing changes
+- Inventory orders
+- Financial decisions
+
+Later allow users to configure automation rules.
+
+---
+
+## Phase 20 — Explainability (Section 44)
+
+Every important recommendation must have:
+
+| Field | Description |
+|---|---|
+| **WHAT** | What is happening? |
+| **WHY** | What evidence produced the recommendation? |
+| **ACTION** | What does TablePulse recommend? |
+| **IMPACT** | What could it potentially be worth? |
+| **CONFIDENCE** | How confident is the system? |
+| **SOURCE** | Which connected systems/data produced the insight? |
+
+This prevents the application from becoming a mysterious black box.
+
+---
+
+## Phase 21 — Data Quality Engine (Section 45)
+
+Create a data-quality system. Detect:
+- Missing data
+- Duplicate records
+- Delayed data
+- API failures
+- Inconsistent timestamps
+- Incomplete integrations
+- Anomalous values
+
+If data quality is poor, reduce recommendation confidence.
+
+Example: *"Recommendation confidence reduced because reservation data has not synchronized for 8 hours."*
+
+---
+
+## Phase 22 — Integration Health Center (Section 46)
+
+Create an **Integration Health Center** showing:
+
+```
+Toast:          Connected ✓     Last sync: 8:14 AM
+Reservations:   Connected ✓     Last sync: 8:14 AM
+Labor:          Warning ⚠       Last sync: 3 hours ago
+Marketing:      Not connected
+```
+
+This prevents owners from trusting stale information.
+
+---
+
+## Phase 23 — Audit Trail (Section 47)
+
+Every important AI action should be recorded. Store:
+- Recommendation
+- Data used
+- Timestamp
+- AI/model version
+- Confidence
+- User decision
+- Action taken
+- Result
+
+Example:
+
+```
+Recommendation: "Launch Tuesday happy-hour campaign."
+User: APPROVED
+Result: +31 covers / +$1,840 revenue
+```
+
+This becomes valuable training and evaluation data.
+
+---
+
+## Phase 24 — Learning Loop (Section 48)
+
+The system should compare:
+
+| Stage | Description |
+|---|---|
+| **Prediction** | What did TablePulse expect? |
+| **Action** | What did the restaurant do? |
+| **Outcome** | What actually happened? |
+
+Then calculate: **Prediction Accuracy** and **Recommendation ROI**.
+
+Over time, improve recommendations using measured outcomes. Do not claim that the AI is "learning" unless the system actually implements an appropriate learning/evaluation mechanism.
+
+---
+
+## Phase 25 — A/B Testing Architecture (Section 49)
+
+Build the architecture to eventually test:
+- Promotions, offers, marketing messages
+- Campaign timing, discounts, creative
+- Customer segments
+
+Example:
+
+```
+Campaign A: "20% off appetizers"
+Campaign B: "Free appetizer with two entrees"
+
+Measure: Covers / Revenue / Average check / Margin / Repeat visits
+```
+
+The objective is to determine which action produces better economics.
+
+---
+
+## Phase 26 — Revenue vs. Profit (Section 50)
+
+**Critical distinction.**
+
+A promotion that generates $2,000 additional revenue may produce very little additional profit.
+
+Whenever cost information is available, distinguish:
+- Revenue
+- Gross profit
+- Contribution margin
+
+Use profit-oriented recommendations whenever sufficient data exists.
+
+---
+
+## Phase 27 — Restaurant Owner Control (Section 51)
+
+The owner must be able to configure:
+- Business goals and preferred margins
+- Labor targets
+- Promotion rules and marketing budget
+- Automation level
+- Customer communication rules
+- Approval requirements
+- Data sharing preferences
+- Connected integrations
+
+**The AI advises. The owner remains in control.**
+
+---
+
+## Phase 28 — White-Label / Multi-Brand Architecture (Section 52)
+
+Design the platform so it can eventually support:
+- Restaurant groups
+- Consultants
+- Restaurant management companies
+- Franchise organizations
+- White-label partners
+
+**Do NOT build the entire white-label system in the MVP.** Prepare the architecture without building unnecessary complexity.
+
+---
+
+## Phase 29 — Partner Strategy (Section 53)
+
+Investigate whether TablePulse could acquire customers through:
+- Restaurant consultants and accountants
+- POS resellers and technology consultants
+- Marketing agencies
+- Restaurant associations
+- Hospitality groups
+
+A restaurant consultant who manages 20 restaurants could be a far more efficient distribution channel than acquiring 20 restaurants individually.
+
+---
+
+## Phase 30 — Land-and-Expand Strategy (Section 54)
+
+Design the SaaS so a customer can begin with Revenue Intelligence, then add:
+
+```
+Revenue Intelligence
+→ Labor Intelligence
+→ Marketing
+→ Customer Intelligence
+→ Inventory
+→ Automation
+```
+
+The objective is increasing **Net Revenue Retention** rather than simply acquiring more customers.
+
+---
+
+## Phase 31 — Free Trial Strategy (Section 55)
+
+Don't automatically give users a generic 30-day trial.
+
+Consider a **"Find Your First $1,000 Opportunity"** onboarding experience:
+
+1. Connect data
+2. Analyze historical performance
+3. Show the restaurant: *"We found 3 opportunities representing an estimated $2,740 in potential revenue."*
+4. Then offer the subscription
+
+Test this against conventional free trials.
+
+---
+
+## Phase 32 — Demo Mode (Section 56)
+
+Create a polished demo restaurant: **ARTEMIS LAKEFRONT**
+
+Use fictional/demo data unless actual restaurant authorization exists.
+
+The demo should show:
+- Revenue, reservations, labor, weather, local events
+- Opportunities, marketing, AI recommendations
+
+A prospective customer should understand the value without connecting their own POS.
+
+---
+
+## Phase 33 — Sales Demonstration (Section 57)
+
+Create a demo flow that takes less than 10 minutes:
+
+1. Show restaurant performance
+2. Show the problem
+3. Show why it is occurring
+4. Show the revenue opportunity
+5. Show the recommended action
+6. Generate the campaign
+7. Show projected economics
+8. Show how the restaurant could measure the result
+
+**Sell MONEY FOUND — not SOFTWARE FEATURES.**
+
+---
+
+## Phase 34 — Pricing Experiment (Section 58)
+
+Do not assume $299/$399/$449 is optimal. Research willingness to pay. Test: $49 / $99 / $149 / $199 / $299.
+
+Determine whether pricing should be based on:
+- Location count
+- Monthly sales volume
+- Number of integrations
+- Features
+- Revenue opportunity volume
+
+Recommend the simplest pricing model that maximizes adoption and lifetime value.
+
+---
+
+## Phase 35 — Unit Economics (Section 59)
+
+Before scaling, calculate:
+
+| Metric | Description |
+|---|---|
+| CAC | Customer acquisition cost |
+| LTV | Lifetime value |
+| Gross margin | Revenue minus COGS |
+| Churn | Monthly/annual rate |
+| Payback period | CAC / monthly gross profit |
+| MRR / ARR | Revenue health |
+| Support cost per restaurant | Ops efficiency |
+| AI/API cost per restaurant | Margin impact |
+| Infrastructure cost per restaurant | Margin impact |
+
+Estimate **gross profit per restaurant** and **maximum sustainable CAC**. Do not recommend aggressive customer acquisition until the unit economics support it.
+
+---
+
+## Phase 36 — AI Cost Control (Section 60)
+
+Monitor AI cost per restaurant. Do not send unnecessary data to an LLM.
+
+Use:
+- Deterministic calculations
+- Caching
+- Structured prompts
+- Smaller models where appropriate
+- Batch processing
+- Event-driven processing
+
+Reserve expensive reasoning for high-value decisions. Create an **AI Cost per Restaurant** metric.
+
+---
+
+## Phase 37 — API Cost Control (Section 61)
+
+Track third-party API costs. For every integration calculate:
+- Cost per restaurant
+- Calls per day
+- Data volume
+- Rate limits
+- Failure rate
+
+The system must remain economically viable as the number of restaurants increases.
+
+---
+
+## Phase 38 — Failure Mode Design (Section 62)
+
+Design for:
+- Toast unavailable
+- Reservation API unavailable
+- Weather unavailable
+- AI unavailable
+- Database unavailable
+- Bad / duplicate / incorrect data
+
+The application should fail gracefully. If AI becomes unavailable, deterministic analytics should still function.
+
+---
+
+## Phase 39 — Legal / Compliance Review (Section 63)
+
+Before production launch, identify requirements involving:
+- Restaurant data and customer data
+- Payment information
+- Marketing communications (SMS, email)
+- Privacy and data retention
+- Third-party API terms
+- AI disclosures
+- Terms of service and acceptable-use policies
+
+Do not provide legal conclusions without verification. Identify where qualified legal counsel is required.
+
+---
+
+## Phase 40 — Security Threat Model (Section 64)
+
+Perform a threat model covering:
+- Credential theft and token compromise
+- Tenant breakout
+- API abuse and webhook spoofing
+- Privilege escalation
+- Malicious restaurant users
+- Prompt injection
+- Data poisoning and AI manipulation
+- Unauthorized automated actions
+
+Create mitigation strategies before production.
+
+---
+
+## Phase 41 — Prompt-Injection Defense (Section 65)
+
+Treat external restaurant data as untrusted input.
+
+Never allow restaurant-generated text, menu descriptions, customer notes, reviews, or external content to directly override system instructions.
+
+Separate:
+```
+SYSTEM INSTRUCTIONS
+DATA
+USER REQUEST
+EXTERNAL CONTENT
+```
+
+AI should never be allowed to execute arbitrary instructions embedded inside restaurant data.
+
+---
+
+## Phase 42 — AI Evaluation (Section 66)
+
+Build a test suite for AI recommendations. Create scenarios:
+- Slow restaurant / busy restaurant
+- Bad weather / large local event
+- Labor shortage / inventory shortage
+- Missing reservation data / conflicting data
+- Unusual sales spike
+
+Evaluate: Accuracy / Safety / Hallucination / Financial reasoning / Recommendation usefulness / Confidence calibration
+
+Do not launch AI automation without evaluation.
+
+---
+
+## Phase 43 — Observability (Section 67)
+
+Implement:
+- Application logs and error tracking
+- API and integration monitoring
+- Database monitoring
+- AI latency and AI cost tracking
+- Recommendation performance tracking
+
+Create an internal **TablePulse Admin Console** for diagnosing customer issues. Do not expose internal tools to restaurant customers.
+
+---
+
+## Phase 44 — Product Analytics (Section 68)
+
+Track product usage. Important events:
+
+```
+Account created
+Restaurant connected
+Integration connected
+First insight viewed
+First recommendation accepted
+First campaign generated
+First campaign launched
+First measurable result
+Subscription started
+Subscription canceled
+```
+
+This will show where customers get stuck.
+
+---
+
+## Phase 45 — The 5-Restaurant Test (Section 69)
+
+Do not attempt mass deployment initially. Recruit five restaurants.
+
+For each restaurant measure:
+- Baseline revenue, labor, marketing
+- Number of opportunities found and accepted
+- Estimated opportunity vs. actual result
+- Time saved
+- User satisfaction
+
+After 30–60 days, determine: **Did TablePulse actually create measurable economic value?** If not, determine why before scaling.
+
+---
+
+## Phase 46 — Proof of Value Report (Section 70)
+
+Create an automated customer report:
+
+```
+YOUR TABLEPULSE RESULTS
+
+Opportunities identified:        17
+Recommendations accepted:        11
+Estimated opportunity:       $8,420
+Measured incremental revenue: $4,180
+Estimated labor savings:        $920
+Marketing campaigns:               6
+Average recommendation acceptance: 64.7%
+```
+
+This becomes a powerful retention and sales tool.
+
+---
+
+## Phase 47 — TablePulse Autopilot (Long-Term Vision) (Section 71)
+
+Do not prematurely build this. But architect toward:
+
+**TABLEPULSE AUTOPILOT**
+
+| Mode | Description |
+|---|---|
+| **Conservative** | AI recommends everything; owner approves all |
+| **Assisted** | AI prepares actions; owner approves before execution |
+| **Automated** | AI automatically executes approved categories within predefined limits |
+
+Example automation rule:
+
+> *"You are authorized to automatically launch promotions up to $100 campaign cost when confidence exceeds 85% and projected contribution margin exceeds $500."*
+
+---
+
+## Phase 48 — Founder Dashboard (Section 72)
+
+Create an internal founder dashboard showing:
+
+```
+Restaurants / Active users / MRR / ARR / Churn / CAC / LTV
+API costs / AI costs / Gross margin
+Recommendation acceptance rate
+Opportunity value identified vs. actual measured value
+Integration failures / Support issues
+```
+
+This is separate from the customer dashboard.
+
+---
+
+## Phase 49 — Investor Readiness (Section 73)
+
+Do not optimize for investors before customers.
+
+Once product-market fit begins appearing, prepare:
+- TAM / SAM / SOM
+- MRR growth and retention
+- Cohort analysis and unit economics
+- Competitive moat narrative
+- Proprietary data advantage
+- Customer case studies
+- Revenue opportunity metrics
+
+Do not exaggerate market size or traction.
+
+---
+
+## Phase 50 — Intellectual Property (Section 74)
+
+Identify potentially protectable assets:
+- Proprietary scoring and recommendation methodologies
+- Software and data normalization architecture
+- Workflow and brand
+- Trademarks
+
+Do not claim something is patentable without qualified IP/legal analysis.
+
+---
+
+## Phase 51 — Final Decision Gate (Section 75)
+
+Before substantial production development, produce:
+
+| Output | Description |
+|---|---|
+| **A. Competitive Scorecard** | Who already solves what? |
+| **B. White-Space Analysis** | Where can TablePulse win? |
+| **C. Customer Problem Score** | Which problem is painful enough to pay for? |
+| **D. MVP** | What is the smallest product worth paying for? |
+| **E. Business Model** | How does it make money? |
+| **F. Unit Economics** | Can it make money? |
+| **G. Technical Risks** | What could stop us? |
+| **H. API/Integration Risks** | What dependencies exist? |
+| **I. Legal/Compliance Risks** | What needs professional review? |
+| **J. 90-Day Plan** | Exactly what should happen in the first 90 days? |
+| **K. Build / Pivot / Kill** | Clear recommendation with evidence |
+
+**Do not proceed to major production development until this analysis is complete.**
+
+---
+
+## Phase 52 — Founder Principles (Section 76)
+
+```
+1. DO NOT BUILD WHAT WE CAN'T SELL.
+2. DO NOT SELL WHAT WE CAN'T PROVE.
+3. DO NOT AUTOMATE WHAT WE CAN'T TRUST.
+4. DO NOT SCALE WHAT DOESN'T HAVE HEALTHY UNIT ECONOMICS.
+5. BUILD THE SMALLEST PRODUCT THAT CREATES MEASURABLE FINANCIAL VALUE.
+```
+
+TablePulse is not ultimately a dashboard. It is not an AI chatbot. It is not another POS. It is not another reservation system. It is not merely a marketing tool.
+
+**The long-term vision is: A REVENUE INTELLIGENCE AND ACTION LAYER FOR RESTAURANTS.**
+
+It should continuously answer:
+
+> "Where are you making money?"
+> "Where are you losing money?"
+> "Where is there an opportunity?"
+> "How confident are we?"
+> "What should you do?"
+> "What could it be worth?"
+> "Did it work?"
+
+Then eventually:
+
+> "Would you like TablePulse to do it for you?"
+
+**Build toward that vision one validated piece at a time.**
