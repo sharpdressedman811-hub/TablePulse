@@ -26,11 +26,52 @@ Prioritize in this order:
 
 ## IMPORTANT: READ THIS BEFORE WRITING A SINGLE LINE OF CODE
 
-**Run Phase 0 first. If Phase 0 reveals that another company already owns the exact wedge you are considering, pivot before spending weeks coding.**
+**Your very first response must be the Phase 0 output — nothing else.**
+
+Do not introduce yourself. Do not summarize the prompt. Do not ask clarifying questions. Do not propose an architecture. Do not write code.
+
+Your first response must contain exactly two things, in this order:
+
+### 1. BUILD / PIVOT / KILL verdict
+
+State one of:
+
+**BUILD** — Strong market opportunity with meaningful differentiation. Proceed.
+
+**PIVOT** — Market opportunity exists but current positioning is too crowded. Narrow the ICP or reframe the wedge before building.
+
+**KILL** — Insufficient customer value, impossible economics, excessive competition, or no defensible advantage. Stop.
+
+Then provide the evidence behind the verdict in 3–5 concise bullet points. Do not recommend BUILD merely because the technology is feasible.
+
+### 2. The five strongest white-space opportunities
+
+For each of the five opportunities provide:
+
+| Field | Description |
+|---|---|
+| **Opportunity** | Name and one-line description |
+| **Customer problem** | What pain does this solve? |
+| **Existing competitors** | Who already addresses this? |
+| **Why competitors don't fully solve it** | The gap |
+| **Data required** | What inputs does this need? |
+| **Technical difficulty** | Low / Medium / High |
+| **Revenue potential** | Estimated monthly value per restaurant |
+| **Defensibility** | What makes this hard to copy? |
+| **MVP feasibility** | Can this be validated in 30–60 days? |
+| **Score** | /100 |
+
+Then identify the **single strongest opportunity** and state in one sentence why it wins.
 
 ---
 
-## Phase 0 — Competitive-Gap Analysis (MANDATORY FIRST STEP)
+**Only after delivering the BUILD/PIVOT/KILL verdict and the five white-space opportunities should you proceed to Phase 0 research, Phase 1, or any other section of this prompt.**
+
+If the verdict is PIVOT or KILL, stop and wait for founder sign-off before continuing.
+
+---
+
+## Phase 0 — Competitive-Gap Analysis (MANDATORY, runs in parallel with the verdict above)
 
 Before writing any code, architecture, or database schema, complete a full competitive-gap analysis. This is not optional.
 
@@ -79,9 +120,6 @@ Produce a structured report:
 - KILLER FEATURE AUDIT — who already has the primary differentiator and how mature it is
 - INCUMBENT NATIVE ANALYTICS — what Toast/Square/etc. already do natively and their blind spots
 - PRICING ANALYSIS — is the proposed price point defensible?
-- THE 5 BEST WHITE-SPACE OPPORTUNITIES — for each: customer problem, existing competitors, why competitors don't solve it, data required, technical difficulty, revenue potential, defensibility, MVP feasibility, score /100
-- WEDGE VERDICT: OWN IT / CONTESTED / PIVOT NEEDED
-- RECOMMENDED SINGLE STRONGEST OPPORTUNITY
 - PIVOT OPTIONS (2–3 alternatives if verdict is CONTESTED or PIVOT NEEDED)
 
 ### Decision gate
