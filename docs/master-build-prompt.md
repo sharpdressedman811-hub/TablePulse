@@ -1363,3 +1363,547 @@ Then eventually:
 > "Would you like TablePulse to do it for you?"
 
 **Build toward that vision one validated piece at a time.**
+
+---
+
+# TABLEPULSE AI — CONTINUOUS PROOF-OF-VALUE OPTIMIZATION ENGINE
+
+You are now responsible for continuously improving the quality and measurable business value of every TablePulse Proof-of-Value Report.
+
+The goal is NOT to manipulate scores.
+
+The goal is to make the underlying product and recommendations better until the rolling average Proof-of-Value Score reaches and sustainably maintains 85/100 or higher.
+
+An 85/100 score must be earned through measurable evidence.
+
+Never increase a score merely because the target is 85.
+
+---
+
+## 1. PROOF-OF-VALUE SCORE
+
+Create a standardized score from 0–100.
+
+Score every customer/report using:
+
+**Financial Impact — 25 points**
+
+Did TablePulse identify meaningful financial opportunities?
+
+Measure:
+- Revenue opportunity identified
+- Revenue actually generated where measurable
+- Cost savings
+- Margin improvement
+- Marketing ROI
+
+**Recommendation Accuracy — 20 points**
+
+Were recommendations directionally and financially correct?
+
+Measure:
+- Predicted outcome
+- Actual outcome
+- Prediction error
+- Recommendation acceptance
+- Recommendation success
+
+**Actionability — 15 points**
+
+Could the restaurant realistically act on the recommendation?
+
+Measure:
+- Clear action
+- Appropriate timing
+- Required resources
+- Ease of execution
+
+**Data Quality — 10 points**
+
+Was the recommendation based on reliable data?
+
+Measure:
+- Data completeness
+- Data freshness
+- Integration reliability
+- Conflicting data
+- Missing information
+
+**Customer Adoption — 10 points**
+
+Did the restaurant use the product?
+
+Measure:
+- Recommendations viewed
+- Recommendations accepted
+- Recommendations dismissed
+- Campaigns created
+- Actions completed
+
+**Measured Results — 10 points**
+
+Did the restaurant produce measurable improvement?
+
+Measure:
+- Incremental revenue
+- Margin
+- Labor savings
+- Repeat visits
+- Campaign performance
+
+**User Satisfaction — 10 points**
+
+Measure:
+- Owner rating
+- Manager rating
+- Usefulness
+- Trust
+- Likelihood to continue using TablePulse
+
+**TOTAL: 100 POINTS**
+
+---
+
+## 2. DO NOT CHEAT THE SCORE
+
+The scoring system must be resistant to manipulation.
+
+Never:
+- Raise scores without evidence
+- Count projected revenue as actual revenue
+- Treat correlation as causation
+- Call an unmeasured outcome successful
+- Hide failed recommendations
+- Remove low-performing reports from the average
+- Change scoring criteria simply to reach 85
+
+If evidence is unavailable, mark: **UNMEASURED**
+
+Do not convert "unmeasured" into "successful."
+
+---
+
+## 3. ROLLING AVERAGE
+
+Maintain:
+- Individual report score
+- Restaurant average
+- 30-day average
+- 90-day average
+- All-time average
+
+**Primary KPI:** Rolling 90-Day Proof-of-Value Score
+
+**Target:** ≥85/100
+
+Also display:
+- Current score
+- Previous score
+- Change
+- Number of reports
+- Confidence interval where statistically appropriate
+
+---
+
+## 4. AUTOMATIC QUALITY GATE
+
+Before a Proof-of-Value Report is considered complete:
+
+Calculate the score.
+
+If SCORE < 85, DO NOT simply publish the report as successful.
+
+Instead run: **IMPROVEMENT LOOP**
+
+---
+
+## 5. IMPROVEMENT LOOP
+
+When a report scores below 85:
+
+**STEP 1 — Diagnose**
+
+Identify the weakest scoring dimensions.
+
+Example:
+- Financial Impact: 19/25
+- Recommendation Accuracy: 12/20
+- Actionability: 14/15
+- Data Quality: 9/10
+- Adoption: 8/10
+- Measured Results: 7/10
+- Satisfaction: 8/10
+- TOTAL: 77/100
+
+Identify the largest causes of failure.
+
+**STEP 2 — Determine WHY**
+
+Possible causes:
+- Poor data
+- Insufficient historical data
+- Weak recommendation
+- Bad timing
+- Low confidence
+- Wrong customer segment
+- Poor campaign
+- Poor user interface
+- Recommendation too difficult to execute
+- Incorrect financial assumptions
+- Insufficient measurement
+
+Do not blame the AI automatically. Find the actual root cause.
+
+**STEP 3 — Generate Improvements**
+
+Produce specific changes. Examples:
+- "Require 90 days of historical data before making this recommendation."
+- "Reduce confidence from 82% to 64%."
+- "Use contribution margin rather than gross revenue."
+- "Add local event data."
+- "Improve customer segmentation."
+- "Change campaign timing."
+- "Require owner approval."
+
+**STEP 4 — TEST**
+
+Run the proposed improvement against:
+- Historical data
+- Simulated data
+- Known scenarios
+- A/B tests
+- Real customer results where available
+
+Do not deploy changes merely because they sound reasonable.
+
+**STEP 5 — MEASURE**
+
+Compare BEFORE versus AFTER. Measure:
+- Accuracy
+- Revenue
+- Margin
+- Acceptance
+- ROI
+- User satisfaction
+
+**STEP 6 — PROMOTE**
+
+If an improvement produces statistically or operationally meaningful improvement, promote it into the production recommendation system.
+
+Record:
+- Version
+- Date
+- Change
+- Reason
+- Result
+
+---
+
+## 6. FAILED EXPERIMENT LIBRARY
+
+Create a database of unsuccessful recommendations.
+
+Record:
+- Recommendation
+- Restaurant type
+- Data used
+- Confidence
+- Action
+- Outcome
+- Failure reason
+
+Do NOT erase failures. Use them to prevent repeated mistakes.
+
+---
+
+## 7. SUCCESS LIBRARY
+
+Create a library of successful interventions.
+
+Example:
+- Restaurant: Independent casual dining
+- Problem: Tuesday 3–5 PM demand
+- Action: Happy-hour promotion
+- Prediction: +$700
+- Actual: +$920
+- Result: SUCCESS
+
+Store the conditions surrounding the successful intervention. Use this information when similar restaurants present similar conditions.
+
+---
+
+## 8. CONTEXTUAL RECOMMENDATIONS
+
+Do not assume that an action that worked at Restaurant A will work at Restaurant B.
+
+Consider:
+- Restaurant type
+- Location
+- Price point
+- Customer demographics where legitimately available
+- Capacity
+- Historical behavior
+- Day / Time / Weather / Events
+- Menu
+- Margin
+- Seasonality
+
+Recommendations must be context-aware.
+
+---
+
+## 9. CONFIDENCE CALIBRATION
+
+Continuously compare predicted confidence versus actual success rate.
+
+Example: Recommendations labeled 80% confidence should eventually succeed approximately 80% of the time, within appropriate statistical uncertainty.
+
+If 80% confidence recommendations only succeed 55% of the time: **CALIBRATION FAILURE**
+
+Adjust the confidence model. Do not simply lower or raise scores cosmetically.
+
+---
+
+## 10. RECOMMENDATION RANKING
+
+Rank opportunities using:
+
+**Potential impact × Probability of success × Actionability ÷ Implementation cost**
+
+Do not always recommend the opportunity with the largest theoretical revenue.
+
+Prefer: **HIGH EXPECTED VALUE + HIGH CONFIDENCE + EASY EXECUTION**
+
+---
+
+## 11. LEARNING FROM CUSTOMER BEHAVIOR
+
+Track:
+- Accepted
+- Rejected
+- Ignored
+- Modified
+- Partially executed
+- Successfully executed
+- Unsuccessful
+
+Use this data to improve recommendation ranking.
+
+However:
+- A rejected recommendation is NOT automatically a bad recommendation.
+- A successful recommendation is NOT automatically proof that the recommendation caused the result.
+
+Preserve causal uncertainty.
+
+---
+
+## 12. CONTROL GROUPS
+
+Where practical, use:
+- A/B tests
+- Historical controls
+- Matched periods
+- Matched customer groups
+- Holdout groups
+
+to estimate incremental impact.
+
+Example:
+- Campaign customers: +$1,840
+- Comparable control group: +$420
+- Estimated incremental effect: +$1,420
+
+Clearly label the methodology and assumptions.
+
+---
+
+## 13. REPORT FORMAT
+
+Every Proof-of-Value Report should contain:
+
+```
+TABLEPULSE PROOF OF VALUE
+
+Overall Score: 87/100
+
+Financial Impact: +$1,420 measured incremental revenue
+Cost Savings: $380
+Opportunities Identified: 7
+Recommendations Accepted: 5
+Successful Actions: 4
+Recommendation Accuracy: 82%
+Estimated ROI: X.X
+
+Biggest Win: [Describe the most valuable successful intervention]
+Biggest Miss: [Describe the largest failed recommendation]
+What We Learned: [Explain how the system should improve]
+Next Opportunities: [List the highest-confidence opportunities]
+```
+
+---
+
+## 14. CUSTOMER-FACING VS INTERNAL SCORING
+
+**Customer Report:** Simple. Financially understandable. No unnecessary technical information.
+
+**Internal Evaluation:** Detailed. Include:
+- Data quality
+- Model version
+- Confidence calibration
+- Prediction error
+- Recommendation outcome
+- API failures
+- AI cost
+- Experiment results
+
+Never expose unnecessary internal security or system information to customers.
+
+---
+
+## 15. 85/100 QUALITY GATE
+
+Classify performance as:
+- 90–100: Exceptional
+- 85–89: Target achieved
+- 75–84: Needs improvement
+- 60–74: Poor
+- Below 60: Critical
+
+But DO NOT optimize solely for the numerical score. A high score must correspond to actual customer value.
+
+---
+
+## 16. DO NOT OPTIMIZE THE METRIC AT THE EXPENSE OF THE PRODUCT
+
+The objective function is: **MAXIMIZE REAL CUSTOMER VALUE**
+
+NOT: **MAXIMIZE SCORE**
+
+If improving the score would require manipulating the scoring system: **REFUSE THE CHANGE.**
+
+Instead improve:
+- Data
+- Recommendations
+- Timing
+- Execution
+- Measurement
+- UX
+- Forecasting
+- Personalization
+
+---
+
+## 17. CONTINUOUS IMPROVEMENT DASHBOARD
+
+Create an internal dashboard showing:
+
+```
+Current rolling score: 85.7
+Previous rolling score: 82.4
+Change: +3.3
+Reports evaluated: 142
+Recommendations: 1,284
+Accepted: 734
+Successful: 511
+Revenue opportunity identified: $482,000
+Measured incremental impact: $176,000
+```
+
+Then show:
+
+**TOP 5 FAILURE MODES**
+1. Poor campaign timing
+2. Insufficient historical data
+3. Low reservation accuracy
+4. Weak customer segmentation
+5. Incorrect demand forecast
+
+**TOP 5 SUCCESS PATTERNS**
+1. Slow-period campaigns
+2. Event-based promotions
+3. Customer reactivation
+4. Labor optimization
+5. Menu optimization
+
+---
+
+## 18. AUTOMATED REGRESSION TESTING
+
+Every change to the recommendation engine must be tested against a fixed benchmark dataset.
+
+A new version cannot be promoted if it significantly worsens:
+- Accuracy
+- Safety
+- Financial calculations
+- Confidence calibration
+- Recommendation quality
+
+even if another metric improves.
+
+Maintain a **GOLDEN DATASET** containing representative restaurant scenarios.
+
+---
+
+## 19. MODEL VERSIONING
+
+Every AI-generated recommendation must be traceable to:
+- Model
+- Model version
+- Prompt version
+- Analytics version
+- Recommendation-engine version
+- Data timestamp
+
+This allows identification of which changes actually improve performance.
+
+---
+
+## 20. MONTHLY PRODUCT REVIEW
+
+At least once per month, generate a **TABLEPULSE INTELLIGENCE REVIEW** including:
+- Current score and trend
+- Top successes and failures
+- Most valuable recommendation
+- Worst recommendation
+- Most common failure and success
+- Data problems
+- Customer complaints
+- Feature requests
+- AI cost
+- Infrastructure cost
+- ROI
+
+Then recommend the **TOP 3 PRODUCT IMPROVEMENTS** based on measurable evidence.
+
+---
+
+## 21. THE SELF-IMPROVEMENT RULE
+
+Every Proof-of-Value Report must contribute information to the product improvement system.
+
+The system should continuously ask:
+- «What worked?»
+- «What failed?»
+- «Why?»
+- «What conditions were present?»
+- «Can we reproduce the success?»
+- «Can we prevent the failure?»
+- «What should change?»
+
+This is the TablePulse learning loop.
+
+---
+
+## 22. FINAL OBJECTIVE
+
+The ultimate goal is: **≥85/100 AVERAGE PROOF-OF-VALUE SCORE** for a statistically meaningful number of customer reports.
+
+But the system must reach that target by becoming more accurate, more useful, more actionable, and more financially valuable.
+
+- Never achieve 85 by changing the scoring system.
+- Never hide failures.
+- Never fabricate outcomes.
+- Never turn projections into measured results.
+- Never claim causation without evidence.
+
+**Build a system that earns the score.**
