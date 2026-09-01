@@ -9,10 +9,10 @@ import { TabBarItem } from '@/components/FloatingTabBar';
 
 const TABS: TabBarItem[] = [
   { name: 'command-center', route: '/(tabs)/command-center', icon: 'home', label: 'Home' },
+  { name: 'locations', route: '/(tabs)/locations', icon: 'map-pin', label: 'Locations' },
   { name: 'action-plan', route: '/(tabs)/action-plan', icon: 'bolt', label: 'Actions' },
   { name: 'revenue', route: '/(tabs)/revenue', icon: 'trending-up', label: 'Revenue' },
-  { name: 'labor', route: '/(tabs)/labor', icon: 'group', label: 'Labor' },
-  { name: 'marketing', route: '/(tabs)/marketing', icon: 'campaign', label: 'Marketing' },
+  { name: 'proof-of-value', route: '/(tabs)/proof-of-value', icon: 'award', label: 'POV' },
 ];
 
 export default function TabLayout() {
@@ -32,8 +32,10 @@ export default function TabLayout() {
             }}
           >
             <Stack.Screen name="command-center" />
+            <Stack.Screen name="locations" />
             <Stack.Screen name="action-plan" />
             <Stack.Screen name="revenue" />
+            <Stack.Screen name="proof-of-value" />
             <Stack.Screen name="labor" />
             <Stack.Screen name="marketing" />
           </Stack>
@@ -48,6 +50,10 @@ export default function TabLayout() {
         <Icon sf="house.fill" />
         <Label>Home</Label>
       </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="locations">
+        <Icon sf="mappin.and.ellipse" />
+        <Label>Locations</Label>
+      </NativeTabs.Trigger>
       <NativeTabs.Trigger name="action-plan">
         <Icon sf="bolt.fill" />
         <Label>Actions</Label>
@@ -56,13 +62,9 @@ export default function TabLayout() {
         <Icon sf="chart.line.uptrend.xyaxis" />
         <Label>Revenue</Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="labor">
-        <Icon sf="person.2.fill" />
-        <Label>Labor</Label>
-      </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="marketing">
-        <Icon sf="megaphone.fill" />
-        <Label>Marketing</Label>
+      <NativeTabs.Trigger name="proof-of-value">
+        <Icon sf="rosette" />
+        <Label>POV</Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );
