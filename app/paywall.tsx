@@ -604,7 +604,7 @@ export default function PaywallScreen() {
           {/* CTA Button */}
           <AnimatedPressable onPress={handlePurchase} disabled={isCtaDisabled}>
             <LinearGradient
-              colors={["#0D9488", "#0A7A70"]}
+              colors={["#00DDFE", "#D702F0"]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[styles.ctaButton, isCtaDisabled && { opacity: 0.6 }]}
@@ -807,7 +807,7 @@ export default function PaywallScreen() {
                       style={{ flex: 1 }}
                     >
                       <LinearGradient
-                        colors={["#0D9488", "#0A7A70"]}
+                        colors={["#00DDFE", "#D702F0"]}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }}
                         style={[
@@ -1094,7 +1094,7 @@ const styles = StyleSheet.create({
   },
   subscribedIcon: {
     fontSize: 32,
-    color: "#0D9488",
+    color: "#00DDFE",
   },
   subscribedTitle: {
     fontSize: 26,

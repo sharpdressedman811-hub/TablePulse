@@ -1,42 +1,48 @@
 // TablePulse AI — Color System
-// Both light and dark variants
+// Extracted from app-icon-iyn.png:
+//   Background: #000032 (deep navy)
+//   Primary:    #00DDFE (electric cyan)
+//   Accent:     #D702F0 (vivid magenta/purple)
+//   Mid-tone:   #1E045A (deep indigo)
 
 export const TablePulseColors = {
   light: {
-    primary: '#0D9488',
-    primaryMuted: 'rgba(13, 148, 136, 0.10)',
-    accent: '#F59E0B',
+    primary: '#00BDDF',        // electric cyan (slightly deepened for light mode contrast)
+    primaryMuted: 'rgba(0, 221, 254, 0.10)',
+    accent: '#D702F0',         // vivid magenta
+    accentMuted: 'rgba(215, 2, 240, 0.10)',
     danger: '#EF4444',
-    background: '#F0F4F3',
+    background: '#F0F4FF',     // very light blue-white
     surface: '#FFFFFF',
-    surfaceSecondary: '#F5F9F8',
-    text: '#0F2420',
-    textSecondary: '#4A6B65',
-    textTertiary: '#8AADA8',
-    border: 'rgba(13, 148, 136, 0.08)',
-    divider: 'rgba(13, 148, 136, 0.05)',
-    tint: '#0D9488',
-    icon: '#4A6B65',
-    tabIconDefault: '#8AADA8',
-    tabIconSelected: '#0D9488',
+    surfaceSecondary: '#F5F7FF',
+    text: '#06003A',           // deep navy text
+    textSecondary: '#3D2E6B',  // indigo-tinted secondary
+    textTertiary: '#8B7DB5',   // muted purple-grey
+    border: 'rgba(0, 221, 254, 0.12)',
+    divider: 'rgba(0, 221, 254, 0.06)',
+    tint: '#00BDDF',
+    icon: '#3D2E6B',
+    tabIconDefault: '#8B7DB5',
+    tabIconSelected: '#00BDDF',
   },
   dark: {
-    primary: '#0D9488',
-    primaryMuted: 'rgba(13, 148, 136, 0.15)',
-    accent: '#F59E0B',
+    primary: '#00DDFE',        // electric cyan (exact from logo)
+    primaryMuted: 'rgba(0, 221, 254, 0.15)',
+    accent: '#D702F0',         // vivid magenta (exact from logo)
+    accentMuted: 'rgba(215, 2, 240, 0.15)',
     danger: '#EF4444',
-    background: '#0A1512',
-    surface: '#111E1B',
-    surfaceSecondary: '#162420',
-    text: '#E8F5F3',
-    textSecondary: '#7AADA8',
-    textTertiary: '#4A6B65',
-    border: 'rgba(255, 255, 255, 0.07)',
-    divider: 'rgba(255, 255, 255, 0.04)',
-    tint: '#0D9488',
-    icon: '#7AADA8',
-    tabIconDefault: '#4A6B65',
-    tabIconSelected: '#0D9488',
+    background: '#000032',     // deep navy (exact from logo background)
+    surface: '#06003A',        // slightly lighter navy
+    surfaceSecondary: '#0D0050', // deep indigo surface
+    text: '#E8F0FF',           // cool white with blue tint
+    textSecondary: '#8BAFD4',  // muted cyan-blue
+    textTertiary: '#4A5A8A',   // dark muted blue
+    border: 'rgba(0, 221, 254, 0.12)',
+    divider: 'rgba(0, 221, 254, 0.06)',
+    tint: '#00DDFE',
+    icon: '#8BAFD4',
+    tabIconDefault: '#4A5A8A',
+    tabIconSelected: '#00DDFE',
   },
 };
 

@@ -1,14 +1,15 @@
-import { StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { StyleSheet } from 'react-native';
 
+// Brand colors extracted from app-icon-iyn.png
 export const colors = {
-  primary: '#162456',    // Material Blue
-  secondary: '#193cb8',  // Darker Blue
-  accent: '#64B5F6',     // Light Blue
-  background: '#101824',  // Keeping dark background
-  backgroundAlt: '#162133',  // Keeping dark background
-  text: '#e3e3e3',       // Keeping light text
-  grey: '#90CAF9',       // Light Blue Grey
-  card: '#193cb8',       // Keeping dark card background
+  primary: '#00DDFE',    // electric cyan (logo mark color)
+  secondary: '#D702F0',  // vivid magenta (logo accent)
+  accent: '#00BDDF',     // slightly deeper cyan for light mode
+  background: '#000032', // deep navy (logo background)
+  backgroundAlt: '#06003A', // slightly lighter navy surface
+  text: '#E8F0FF',       // cool white with blue tint
+  grey: '#8BAFD4',       // muted cyan-blue
+  card: '#0D0050',       // deep indigo card background
 };
 
 export const buttonStyles = StyleSheet.create({
@@ -78,7 +79,6 @@ export const commonStyles = StyleSheet.create({
     padding: 10,
     marginVertical: 8,
     width: '100%',
-    boxShadow: '0px 2px 3px rgba(0, 0, 0, 0.1)',
     elevation: 2,
   },
   icon: {

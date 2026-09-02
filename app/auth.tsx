@@ -18,12 +18,14 @@ import { supabase } from '@/utils/supabase';
 
 type Tab = 'signin' | 'signup';
 
-const TEAL = '#00C9A7';
-const BG = '#0A0A0A';
-const CARD = '#1A1A1A';
-const BORDER = '#2A2A2A';
-const TEXT = '#FFFFFF';
-const TEXT_SECONDARY = '#888888';
+// Brand colors extracted from app-icon-iyn.png
+const PRIMARY = '#00DDFE';   // electric cyan
+const ACCENT = '#D702F0';    // vivid magenta
+const BG = '#000032';        // deep navy (logo background)
+const CARD = '#06003A';      // slightly lighter navy surface
+const BORDER = '#0D0050';    // deep indigo border
+const TEXT = '#E8F0FF';      // cool white
+const TEXT_SECONDARY = '#8BAFD4'; // muted cyan-blue
 
 export default function AuthScreen() {
   const router = useRouter();
@@ -271,7 +273,7 @@ export default function AuthScreen() {
                     <Text style={styles.successTitle}>Check your email</Text>
                     <Text style={styles.successSubtitle}>
                       We sent a confirmation link to{' '}
-                      <Text style={{ color: TEAL }}>{signUpEmail}</Text>. Click it to activate your account.
+                      <Text style={{ color: PRIMARY }}>{signUpEmail}</Text>. Click it to activate your account.
                     </Text>
                     <Pressable
                       style={styles.primaryButton}
@@ -409,7 +411,7 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 18,
-    backgroundColor: TEAL,
+    backgroundColor: PRIMARY,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 14,
@@ -417,7 +419,7 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 22,
     fontWeight: '800',
-    color: '#000',
+    color: BG,
     letterSpacing: -0.5,
   },
   appName: {
@@ -445,7 +447,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   tabButtonActive: {
-    backgroundColor: TEAL,
+    backgroundColor: PRIMARY,
   },
   tabButtonText: {
     fontSize: 15,
@@ -453,7 +455,7 @@ const styles = StyleSheet.create({
     color: TEXT_SECONDARY,
   },
   tabButtonTextActive: {
-    color: '#000',
+    color: BG,
   },
   form: {
     gap: 16,
@@ -483,7 +485,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   primaryButton: {
-    backgroundColor: TEAL,
+    backgroundColor: PRIMARY,
     borderRadius: 14,
     paddingVertical: 16,
     alignItems: 'center',
@@ -495,7 +497,7 @@ const styles = StyleSheet.create({
   primaryButtonText: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#000',
+    color: BG,
   },
   forgotButton: {
     alignItems: 'center',
@@ -503,7 +505,7 @@ const styles = StyleSheet.create({
   },
   forgotText: {
     fontSize: 14,
-    color: TEAL,
+    color: PRIMARY,
   },
   dividerRow: {
     flexDirection: 'row',
@@ -521,7 +523,7 @@ const styles = StyleSheet.create({
     color: TEXT_SECONDARY,
   },
   socialButton: {
-    backgroundColor: '#1C1C1E',
+    backgroundColor: CARD,
     borderRadius: 14,
     paddingVertical: 15,
     alignItems: 'center',
@@ -554,7 +556,7 @@ const styles = StyleSheet.create({
     color: TEXT_SECONDARY,
   },
   switchLink: {
-    color: TEAL,
+    color: PRIMARY,
     fontWeight: '600',
   },
   successBox: {
