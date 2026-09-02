@@ -250,6 +250,19 @@ export default function HomeScreen() {
         </AnimatedPressable>
       )}
 
+      {/* Account management link */}
+      <AnimatedPressable
+        onPress={() => {
+          console.log('[HomeScreen] Account link tapped — navigating to account');
+          router.push('/account');
+        }}
+        style={styles.accountLink}
+      >
+        <Text style={[styles.accountLinkText, { color: colors.textTertiary }]}>
+          Account & Data Settings
+        </Text>
+      </AnimatedPressable>
+
       {/* Bottom padding */}
       <View style={{ height: 40 }} />
     </ScrollView>
@@ -360,6 +373,16 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   founderLinkText: {
+    fontSize: 12,
+    fontFamily: 'DMSans_400Regular',
+    textAlign: 'center',
+  },
+  accountLink: {
+    alignItems: 'center',
+    paddingVertical: 8,
+    marginTop: 4,
+  },
+  accountLinkText: {
     fontSize: 12,
     fontFamily: 'DMSans_400Regular',
     textAlign: 'center',

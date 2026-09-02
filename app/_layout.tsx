@@ -188,6 +188,7 @@ function AppContent() {
               <Stack.Screen name="auth" options={{ headerShown: false }} />
               <Stack.Screen name="onboarding" options={{ headerShown: false }} />
               <Stack.Screen name="paywall" options={{ headerShown: false }} />
+              <Stack.Screen name="account" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen
                 name="recommendation/[id]"

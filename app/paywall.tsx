@@ -677,9 +677,23 @@ export default function PaywallScreen() {
           >
             {Platform.OS === "ios" ? "Apple ID" : "Google Play"} account will be charged.
             Subscription renews automatically. Cancel anytime.{" "}
-            <Text style={{ textDecorationLine: "underline" }}>Terms</Text>
+            <Text
+              style={{ textDecorationLine: "underline" }}
+              onPress={() => Linking.openURL("https://tablepulse.app/terms")}
+              accessibilityRole="link"
+              accessibilityLabel="Terms of Service"
+            >
+              Terms
+            </Text>
             {" · "}
-            <Text style={{ textDecorationLine: "underline" }}>Privacy</Text>
+            <Text
+              style={{ textDecorationLine: "underline" }}
+              onPress={() => Linking.openURL("https://tablepulse.app/privacy")}
+              accessibilityRole="link"
+              accessibilityLabel="Privacy Policy"
+            >
+              Privacy
+            </Text>
           </Text>
         </View>
       </SafeAreaView>
