@@ -23,12 +23,29 @@ import React, {
   useCallback,
   ReactNode,
 } from "react";
-import { Platform } from "react-native";
-import { OneSignal, NotificationWillDisplayEvent } from "react-native-onesignal";
+import { Platform, NativeModules } from "react-native";
 import Constants from "expo-constants";
 
 // Import auth hook for user targeting (validated at setup time)
 import { useAuth } from "@/contexts/AuthContext";
+
+// Guard: react-native-onesignal accesses its TurboModule at import time.
+// In Expo Go the native module is absent, causing an Invariant Violation crash
+// before the app can render. We check for the module first and only require()
+// the package lazily when it is actually present.
+const isOneSignalAvailable =
+  !!NativeModules.OneSignal || !!NativeModules.RNOneSignal;
+
+// Lazy-load types so TypeScript is happy without a top-level import.
+type OneSignalType = typeof import("react-native-onesignal").OneSignal;
+type NotificationWillDisplayEvent =
+  import("react-native-onesignal").NotificationWillDisplayEvent;
+
+// Only require the module when the native layer is present.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const OneSignal: OneSignalType | null = isOneSignalAvailable
+  ? (require("react-native-onesignal").OneSignal as OneSignalType)
+  : null;
 
 // Read App ID from app.json (expo.extra)
 const extra = Constants.expoConfig?.extra || {};
@@ -78,7 +95,13 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
   // Initialize OneSignal on mount
   useEffect(() => {
-    if (isWeb) {
+    if (isWeb || !isOneSignalAvailable || !OneSignal) {
+      if (__DEV__ && !isWeb) {
+        console.warn(
+          "[OneSignal] Native module not available (Expo Go). " +
+          "Push notifications require a custom dev build."
+        );
+      }
       setLoading(false);
       return;
     }
@@ -94,6 +117,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
     try {
       // Initialize OneSignal
+      console.log("[OneSignal] Initializing...");
       OneSignal.initialize(ONESIGNAL_APP_ID);
 
       if (__DEV__) {
@@ -106,7 +130,6 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
       // Listen for notification events
       const foregroundHandler = (event: NotificationWillDisplayEvent) => {
-        // Display the notification
         event.getNotification().display();
 
         const notification = event.getNotification();
@@ -120,14 +143,15 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
       // Listen for permission changes
       const permissionHandler = (granted: boolean) => {
+        console.log("[OneSignal] Permission changed:", granted);
         setHasPermission(granted);
         setPermissionDenied(!granted);
       };
       OneSignal.Notifications.addEventListener("permissionChange", permissionHandler);
 
       return () => {
-        OneSignal.Notifications.removeEventListener("foregroundWillDisplay", foregroundHandler);
-        OneSignal.Notifications.removeEventListener("permissionChange", permissionHandler);
+        OneSignal!.Notifications.removeEventListener("foregroundWillDisplay", foregroundHandler);
+        OneSignal!.Notifications.removeEventListener("permissionChange", permissionHandler);
       };
     } catch (error) {
       console.error("[OneSignal] Failed to initialize:", error);
@@ -138,14 +162,12 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
 
   // Sync OneSignal external user ID with authenticated user
   useEffect(() => {
-    if (isWeb || !ONESIGNAL_APP_ID) return;
+    if (isWeb || !isOneSignalAvailable || !OneSignal || !ONESIGNAL_APP_ID) return;
 
     try {
       if (user?.id) {
+        console.log("[OneSignal] Linking user ID:", user.id);
         OneSignal.login(user.id);
-        if (__DEV__) {
-          console.log("[OneSignal] Linked user ID:", user.id);
-        }
       } else {
         OneSignal.logout();
       }
@@ -155,10 +177,12 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   }, [user?.id]);
 
   const requestPermission = useCallback(async (): Promise<boolean> => {
-    if (isWeb) return false;
+    if (isWeb || !isOneSignalAvailable || !OneSignal) return false;
 
+    console.log("[OneSignal] Requesting notification permission");
     try {
       const granted = await OneSignal.Notifications.requestPermission(true);
+      console.log("[OneSignal] Permission result:", granted);
       setHasPermission(granted);
       setPermissionDenied(!granted);
       return granted;
@@ -169,7 +193,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   }, []);
 
   const sendTag = useCallback((key: string, value: string) => {
-    if (isWeb) return;
+    if (isWeb || !isOneSignalAvailable || !OneSignal) return;
     try {
       OneSignal.User.addTag(key, value);
     } catch (error) {
@@ -178,7 +202,7 @@ export function NotificationProvider({ children }: NotificationProviderProps) {
   }, []);
 
   const deleteTag = useCallback((key: string) => {
-    if (isWeb) return;
+    if (isWeb || !isOneSignalAvailable || !OneSignal) return;
     try {
       OneSignal.User.removeTag(key);
     } catch (error) {
