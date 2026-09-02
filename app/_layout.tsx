@@ -5,7 +5,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { SystemBars } from "react-native-edge-to-edge";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { useColorScheme, Alert } from "react-native";
+import { useColorScheme, Alert, View, ActivityIndicator } from "react-native";
 import { useNetworkState } from "expo-network";
 import {
   DarkTheme,
@@ -16,6 +16,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { WidgetProvider } from "@/contexts/WidgetContext";
 import { SubscriptionProvider, useSubscription } from "@/contexts/SubscriptionContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import {
   useFonts,
@@ -24,7 +25,7 @@ import {
   DMSans_600SemiBold,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
-import { isOnboardingComplete } from "@/utils/onboardingStorage";
+import { supabase } from "@/utils/supabase";
 
 // Only wrap with ErrorBoundary in dev — production apps should not include it
 const DevErrorBoundary = __DEV__
@@ -38,44 +39,85 @@ export const unstable_settings = {
   initialRouteName: "(tabs)",
 };
 
+const AUTH_ROUTES = ["/auth", "/auth-popup", "/auth-callback"];
+const PUBLIC_ROUTES = ["/auth", "/auth-popup", "/auth-callback", "/onboarding", "/paywall"];
 
-function SubscriptionRedirect() {
-  const { isSubscribed, loading } = useSubscription();
-  const router = useRouter();
+function NavigationGuard() {
+  const { session, loading: authLoading } = useAuth();
+  const { isSubscribed, loading: subLoading } = useSubscription();
   const pathname = usePathname();
+  const router = useRouter();
+  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
 
   useEffect(() => {
-    if (loading) return;
-    const onOnboarding = pathname.startsWith("/onboarding");
-    if (onOnboarding) return;
+    if (!session) {
+      setOnboardingDone(null);
+      return;
+    }
+    console.log('[NavigationGuard] Checking onboarding for user:', session.user.id);
+    supabase
+      .from('onboarding_responses')
+      .select('id')
+      .eq('user_id', session.user.id)
+      .limit(1)
+      .then(({ data, error }) => {
+        if (error) {
+          console.warn('[NavigationGuard] Onboarding check error:', error.message);
+          setOnboardingDone(false);
+        } else {
+          const done = Array.isArray(data) && data.length > 0;
+          console.log('[NavigationGuard] Onboarding complete:', done);
+          setOnboardingDone(done);
+        }
+      });
+  }, [session]);
 
-    let cancelled = false;
-    isOnboardingComplete().then((done) => {
-      if (cancelled) return;
-      if (!done) return;
-      const onPaywall = pathname === "/paywall";
-      if (onPaywall) return;
-      if (!isSubscribed) {
-        router.replace("/paywall");
+  useEffect(() => {
+    if (authLoading) return;
+
+    // Not logged in → go to auth (unless already on a public route)
+    if (!session) {
+      if (!AUTH_ROUTES.includes(pathname)) {
+        console.log('[NavigationGuard] No session — redirecting to /auth');
+        router.replace('/auth');
       }
-    }).catch(() => {
-      if (cancelled) return;
-      const onPaywall = pathname === "/paywall";
-      if (onPaywall) return;
-      if (!isSubscribed) {
-        router.replace("/paywall");
+      return;
+    }
+
+    // Logged in but onboarding status not yet known
+    if (onboardingDone === null) return;
+
+    // On auth screen but logged in → redirect away
+    if (AUTH_ROUTES.includes(pathname)) {
+      if (!onboardingDone) {
+        router.replace('/onboarding');
+      } else if (!isSubscribed && !subLoading) {
+        router.replace('/paywall');
+      } else {
+        router.replace('/(tabs)/command-center');
       }
-    });
-    return () => { cancelled = true; };
-  }, [isSubscribed, loading, pathname]);
+      return;
+    }
+
+    // Onboarding not done → go to onboarding
+    if (!onboardingDone && pathname !== '/onboarding') {
+      console.log('[NavigationGuard] Onboarding incomplete — redirecting');
+      router.replace('/onboarding');
+      return;
+    }
+
+    // Onboarding done but not subscribed → go to paywall
+    if (onboardingDone && !isSubscribed && !subLoading && pathname !== '/paywall') {
+      console.log('[NavigationGuard] Not subscribed — redirecting to paywall');
+      router.replace('/paywall');
+    }
+  }, [authLoading, session, onboardingDone, isSubscribed, subLoading, pathname]);
 
   return null;
 }
 
-export default function RootLayout() {
-  const [onboardingComplete, setOnboardingComplete] = useState<boolean | null>(null);
-  const pathname = usePathname();
-
+function AppContent() {
+  const { loading: authLoading } = useAuth();
   const colorScheme = useColorScheme();
   const networkState = useNetworkState();
   const [loaded] = useFonts({
@@ -84,12 +126,6 @@ export default function RootLayout() {
     DMSans_600SemiBold,
     DMSans_700Bold,
   });
-
-  useEffect(() => {
-    isOnboardingComplete().then((complete) => {
-      setOnboardingComplete(complete);
-    });
-  }, [pathname]);
 
   useEffect(() => {
     if (loaded) {
@@ -103,14 +139,18 @@ export default function RootLayout() {
       networkState.isInternetReachable === false
     ) {
       Alert.alert(
-        "🔌 You are offline",
+        "You are offline",
         "You can keep using the app! Your changes will be saved locally and synced when you are back online."
       );
     }
   }, [networkState.isConnected, networkState.isInternetReachable]);
 
-  if (onboardingComplete === null || !loaded) {
-    return null;
+  if (!loaded || authLoading) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#0A0A0A', justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#00C9A7" />
+      </View>
+    );
   }
 
   const CustomDefaultTheme: Theme = {
@@ -139,49 +179,54 @@ export default function RootLayout() {
   };
 
   return (
-    <SubscriptionProvider>
-      <DevErrorBoundary>
-        <SubscriptionRedirect />
-        <StatusBar style="auto" animated />
-        <ThemeProvider
-          value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}
-        >
-          <SafeAreaProvider>
-            <WidgetProvider>
-              <GestureHandlerRootView>
-                {onboardingComplete === false && pathname !== "/auth" && pathname !== "/paywall" && pathname !== "/auth-popup" && pathname !== "/auth-callback" && <Redirect href="/onboarding" />}
+    <ThemeProvider value={colorScheme === "dark" ? CustomDarkTheme : CustomDefaultTheme}>
+      <SafeAreaProvider>
+        <WidgetProvider>
+          <GestureHandlerRootView>
+            <NavigationGuard />
+            <Stack>
+              <Stack.Screen name="auth" options={{ headerShown: false }} />
+              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+              <Stack.Screen name="paywall" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="recommendation/[id]"
+                options={{
+                  headerShown: true,
+                  headerTitle: "Recommendation",
+                  headerBackButtonDisplayMode: "minimal",
+                  headerTransparent: true,
+                  headerBlurEffect: "systemMaterial",
+                }}
+              />
+              <Stack.Screen
+                name="campaign/[id]"
+                options={{
+                  headerShown: true,
+                  headerTitle: "Campaign",
+                  headerBackButtonDisplayMode: "minimal",
+                  headerTransparent: true,
+                  headerBlurEffect: "systemMaterial",
+                }}
+              />
+            </Stack>
+            <SystemBars style={"auto"} />
+          </GestureHandlerRootView>
+        </WidgetProvider>
+      </SafeAreaProvider>
+    </ThemeProvider>
+  );
+}
 
-                <Stack>
-                  <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-                  <Stack.Screen name="paywall" options={{ headerShown: false }} />
-                  <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-                  <Stack.Screen
-                    name="recommendation/[id]"
-                    options={{
-                      headerShown: true,
-                      headerTitle: "Recommendation",
-                      headerBackButtonDisplayMode: "minimal",
-                      headerTransparent: true,
-                      headerBlurEffect: "systemMaterial",
-                    }}
-                  />
-                  <Stack.Screen
-                    name="campaign/[id]"
-                    options={{
-                      headerShown: true,
-                      headerTitle: "Campaign",
-                      headerBackButtonDisplayMode: "minimal",
-                      headerTransparent: true,
-                      headerBlurEffect: "systemMaterial",
-                    }}
-                  />
-                </Stack>
-                <SystemBars style={"auto"} />
-              </GestureHandlerRootView>
-            </WidgetProvider>
-          </SafeAreaProvider>
-        </ThemeProvider>
-      </DevErrorBoundary>
-    </SubscriptionProvider>
+export default function RootLayout() {
+  return (
+    <AuthProvider>
+      <SubscriptionProvider>
+        <DevErrorBoundary>
+          <StatusBar style="auto" animated />
+          <AppContent />
+        </DevErrorBoundary>
+      </SubscriptionProvider>
+    </AuthProvider>
   );
 }

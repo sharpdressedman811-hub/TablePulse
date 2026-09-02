@@ -1,26 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
   View,
   Text,
   ScrollView,
   Animated,
   TouchableOpacity,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useColors } from '@/hooks/useColors';
 import { useLayout } from '@/hooks/useLayout';
 import { SkeletonScreen } from '@/components/SkeletonLoader';
 import { OPERATOR, LOCATIONS } from '@/data/mockPOV';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/utils/supabase';
 import {
   MapPin,
   TrendingUp,
   TrendingDown,
   ChevronRight,
-  AlertTriangle,
-  Users,
-  BarChart2,
-  Zap,
 } from 'lucide-react-native';
+
+interface SupabaseRestaurant {
+  id: string;
+  name: string;
+  cuisine_type: string | null;
+  status: string | null;
+  address: string | null;
+  group_id: string | null;
+}
+
+interface LocationDisplay {
+  id: string;
+  name: string;
+  address: string;
+  status: string;
+  urgencyScore: number;
+  urgencyReason: string;
+  revenueThisWeek: number;
+  revenueTrend: number;
+  laborPercent: number;
+  laborTarget: number;
+  topOpportunity: string;
+  topOpportunityValue: number;
+}
 
 function AnimatedListItem({ index, children }: { index: number; children: React.ReactNode }) {
   const opacity = useRef(new Animated.Value(0)).current;
@@ -58,20 +81,91 @@ export default function LocationsScreen() {
   const colors = useColors();
   const router = useRouter();
   const { isTablet, isLargeTablet } = useLayout();
+  const { user, profile } = useAuth();
+
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [locations, setLocations] = useState<LocationDisplay[]>([]);
+  const [usingMock, setUsingMock] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const horizontalPadding = isTablet ? 32 : 16;
   const paddingBottom = isTablet ? 60 : 120;
   const contentMaxWidth = isLargeTablet ? 900 : isTablet ? 720 : undefined;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
+  const fetchLocations = useCallback(async () => {
+    if (!user) return;
+    console.log('[LocationsScreen] Fetching restaurants for user:', user.id);
+
+    try {
+      // Get the user's restaurant group
+      const groupId = profile?.restaurant_group_id;
+
+      let query = supabase
+        .from('restaurants')
+        .select('id, name, cuisine_type, status, address, group_id')
+        .eq('owner_id', user.id);
+
+      if (groupId) {
+        query = supabase
+          .from('restaurants')
+          .select('id, name, cuisine_type, status, address, group_id')
+          .eq('group_id', groupId);
+      }
+
+      const { data, error } = await query.limit(20);
+
+      if (error) {
+        console.warn('[LocationsScreen] Fetch error:', error.message);
+        setUsingMock(true);
+        setLocations(LOCATIONS as LocationDisplay[]);
+      } else if (!data || data.length === 0) {
+        console.log('[LocationsScreen] No restaurants found — using mock data');
+        setUsingMock(true);
+        setLocations(LOCATIONS as LocationDisplay[]);
+      } else {
+        console.log('[LocationsScreen] Restaurants loaded:', data.length);
+        setUsingMock(false);
+        // Map Supabase data to display format, filling in mock values for missing fields
+        const mapped: LocationDisplay[] = data.map((r: SupabaseRestaurant, idx: number) => {
+          const mockFallback = LOCATIONS[idx % LOCATIONS.length];
+          return {
+            id: r.id,
+            name: r.name,
+            address: r.address ?? mockFallback?.address ?? 'Address not set',
+            status: r.status ?? mockFallback?.status ?? 'on_track',
+            urgencyScore: mockFallback?.urgencyScore ?? 50,
+            urgencyReason: mockFallback?.urgencyReason ?? 'No issues detected',
+            revenueThisWeek: mockFallback?.revenueThisWeek ?? 0,
+            revenueTrend: mockFallback?.revenueTrend ?? 0,
+            laborPercent: mockFallback?.laborPercent ?? 28,
+            laborTarget: mockFallback?.laborTarget ?? 28,
+            topOpportunity: mockFallback?.topOpportunity ?? 'No opportunities identified',
+            topOpportunityValue: mockFallback?.topOpportunityValue ?? 0,
+          };
+        });
+        setLocations(mapped);
+      }
+    } catch (err) {
+      console.error('[LocationsScreen] Unexpected error:', err);
+      setUsingMock(true);
+      setLocations(LOCATIONS as LocationDisplay[]);
+    } finally {
       setLoading(false);
+      setRefreshing(false);
       Animated.timing(fadeAnim, { toValue: 1, duration: 400, useNativeDriver: true }).start();
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, []);
+    }
+  }, [user, profile]);
+
+  useEffect(() => {
+    fetchLocations();
+  }, [fetchLocations]);
+
+  const handleRefresh = () => {
+    console.log('[LocationsScreen] Pull-to-refresh triggered');
+    setRefreshing(true);
+    fetchLocations();
+  };
 
   if (loading) {
     return (
@@ -84,15 +178,22 @@ export default function LocationsScreen() {
     );
   }
 
-  const sortedLocations = [...LOCATIONS].sort(
+  const sortedLocations = [...locations].sort(
     (a, b) => (STATUS_ORDER[a.status] ?? 3) - (STATUS_ORDER[b.status] ?? 3)
   );
 
+  const totalRevenue = locations.reduce((sum, l) => sum + l.revenueThisWeek, 0);
+  const avgLabor = locations.length > 0
+    ? locations.reduce((sum, l) => sum + l.laborPercent, 0) / locations.length
+    : 0;
+  const totalRevText = totalRevenue > 0 ? `$${totalRevenue.toLocaleString()}` : '$—';
+  const avgLaborText = avgLabor > 0 ? `${avgLabor.toFixed(1)}%` : '—';
+
   const groupSummaryChips = [
-    { label: 'Total Revenue This Week', value: '$343,600' },
-    { label: 'Avg Labor', value: '29.5%' },
-    { label: 'Active Opportunities', value: '12' },
-    { label: 'Avg POV Score', value: '85.7' },
+    { label: 'Total Revenue This Week', value: totalRevText },
+    { label: 'Avg Labor', value: avgLaborText },
+    { label: 'Active Locations', value: String(locations.length) },
+    { label: 'Data Source', value: usingMock ? 'Demo' : 'Live' },
   ];
 
   const crossLocationInsights = [
@@ -116,6 +217,9 @@ export default function LocationsScreen() {
     },
   ];
 
+  const operatorName = usingMock ? OPERATOR.name : (profile?.full_name ?? 'Your Group');
+  const operatorLocations = locations.length;
+
   return (
     <Animated.ScrollView
       style={{ flex: 1, backgroundColor: colors.background, opacity: fadeAnim }}
@@ -126,6 +230,13 @@ export default function LocationsScreen() {
         paddingTop: 16,
         alignItems: contentMaxWidth ? 'center' : undefined,
       }}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          tintColor={colors.primary}
+        />
+      }
     >
       <View style={{ width: '100%', maxWidth: contentMaxWidth }}>
 
@@ -147,9 +258,9 @@ export default function LocationsScreen() {
                 color: colors.textSecondary,
                 marginTop: 2,
               }}>
-                {OPERATOR.name}
+                {operatorName}
                 {' · '}
-                {OPERATOR.locations}
+                {operatorLocations}
                 {' locations'}
               </Text>
             </View>
@@ -166,7 +277,7 @@ export default function LocationsScreen() {
                 textTransform: 'uppercase',
                 letterSpacing: 0.5,
               }}>
-                Area Manager
+                {usingMock ? 'Demo' : 'Live'}
               </Text>
             </View>
           </View>
@@ -220,10 +331,14 @@ export default function LocationsScreen() {
           const trendText = trendPositive
             ? `+${loc.revenueTrend}%`
             : `${loc.revenueTrend}%`;
-          const revenueText = `$${loc.revenueThisWeek.toLocaleString()}`;
+          const revenueText = loc.revenueThisWeek > 0
+            ? `$${loc.revenueThisWeek.toLocaleString()}`
+            : '$—';
           const laborText = `${loc.laborPercent}%`;
           const laborTargetText = `vs ${loc.laborTarget}% target`;
-          const opportunityValueText = `$${loc.topOpportunityValue.toLocaleString()}`;
+          const opportunityValueText = loc.topOpportunityValue > 0
+            ? `$${loc.topOpportunityValue.toLocaleString()}`
+            : '$—';
 
           return (
             <AnimatedListItem key={loc.id} index={idx + 2}>
@@ -405,7 +520,7 @@ export default function LocationsScreen() {
                   </View>
                   <TouchableOpacity
                     onPress={() => {
-                      console.log('[Locations] View Details pressed for:', loc.name);
+                      console.log('[LocationsScreen] View Details pressed for:', loc.name, 'id:', loc.id);
                       router.push('/(tabs)/command-center');
                     }}
                     style={{
