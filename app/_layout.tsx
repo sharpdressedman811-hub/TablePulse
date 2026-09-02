@@ -17,6 +17,7 @@ import { StatusBar } from "expo-status-bar";
 import { WidgetProvider } from "@/contexts/WidgetContext";
 import { SubscriptionProvider, useSubscription } from "@/contexts/SubscriptionContext";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { BrandingProvider } from "@/contexts/BrandingContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import {
@@ -191,6 +192,12 @@ function AppContent() {
               <Stack.Screen name="paywall" options={{ headerShown: false }} />
               <Stack.Screen name="account" options={{ headerShown: false }} />
               <Stack.Screen name="notification-preferences" options={{ headerShown: false }} />
+              <Stack.Screen
+                name="brand-settings"
+                options={{
+                  headerShown: false,
+                }}
+              />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen
                 name="recommendation/[id]"
@@ -224,14 +231,16 @@ function AppContent() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <SubscriptionProvider>
-        <NotificationProvider>
-          <DevErrorBoundary>
-            <StatusBar style="auto" animated />
-            <AppContent />
-          </DevErrorBoundary>
-        </NotificationProvider>
-      </SubscriptionProvider>
+      <BrandingProvider>
+        <SubscriptionProvider>
+          <NotificationProvider>
+            <DevErrorBoundary>
+              <StatusBar style="auto" animated />
+              <AppContent />
+            </DevErrorBoundary>
+          </NotificationProvider>
+        </SubscriptionProvider>
+      </BrandingProvider>
     </AuthProvider>
   );
 }

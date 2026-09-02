@@ -27,6 +27,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@/utils/supabase";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotifications } from "@/contexts/NotificationContext";
+import { useBranding } from "@/contexts/BrandingContext";
 
 const LIGHT = {
   background: "#F0F4F3",
@@ -56,11 +57,14 @@ const DARK = {
 
 export default function AccountScreen() {
   const router = useRouter();
-  const { session, signOut } = useAuth();
+  const { session, signOut, profile } = useAuth();
   const colorScheme = useColorScheme();
   const colors = colorScheme === "dark" ? DARK : LIGHT;
 
   const { hasPermission } = useNotifications();
+  const { brandColors } = useBranding();
+
+  const isFounderOrAdmin = profile?.role === 'founder' || profile?.role === 'admin';
 
   const [step, setStep] = useState<"info" | "confirm" | "deleting">("info");
   const [confirmText, setConfirmText] = useState("");
@@ -175,6 +179,32 @@ export default function AccountScreen() {
             <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
           </View>
         </Pressable>
+
+        {/* Brand & White-Label — founders/admins only */}
+        {isFounderOrAdmin && (
+          <Pressable
+            style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
+            onPress={() => {
+              console.log('[AccountScreen] Brand & White-Label tapped');
+              router.push('/brand-settings');
+            }}
+            accessibilityRole="button"
+            accessibilityLabel="Brand and White-Label settings"
+          >
+            <View style={styles.cardRow}>
+              <View style={[styles.avatarCircle, { backgroundColor: brandColors.primary + '22' }]}>
+                <Ionicons name="color-palette-outline" size={22} color={brandColors.primary} />
+              </View>
+              <View style={styles.cardRowText}>
+                <Text style={[styles.cardValue, { color: colors.text }]}>Brand & White-Label</Text>
+                <Text style={[styles.cardLabel, { color: colors.textTertiary }]}>
+                  Customize colors for your restaurant group
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
+            </View>
+          </Pressable>
+        )}
 
         {/* Account info card */}
         <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
