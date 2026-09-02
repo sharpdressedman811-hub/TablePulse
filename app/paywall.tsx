@@ -17,7 +17,6 @@ import {
   Platform,
   Animated,
   Dimensions,
-  useColorScheme,
   Modal,
   TextInput,
   KeyboardAvoidingView,
@@ -25,12 +24,12 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { PurchasesPackage } from "react-native-purchases";
 import Purchases from "react-native-purchases";
 import { useSubscription } from "@/contexts/SubscriptionContext";
+import { useBranding } from "@/contexts/BrandingContext";
 import { TablePulseColors } from "@/constants/Colors";
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -305,7 +304,8 @@ function TierCard({
 export default function PaywallScreen() {
   const router = useRouter();
   const colorScheme = useColorScheme();
-  const colors = colorScheme === "dark" ? TablePulseColors.dark : TablePulseColors.light;
+  const { brandColors } = useBranding();
+  const colors = brandColors;
 
   const {
     packages,
@@ -474,7 +474,7 @@ export default function PaywallScreen() {
         <SafeAreaView edges={["top", "bottom"]} style={styles.subscribedSafeArea}>
           <View style={styles.subscribedContent}>
             <View style={[styles.subscribedIconRing, { backgroundColor: colors.primaryMuted }]}>
-              <Text style={styles.subscribedIcon}>✓</Text>
+              <Text style={[styles.subscribedIcon, { color: colors.primary }]}>✓</Text>
             </View>
             <Text style={[styles.subscribedTitle, { color: colors.text, fontFamily: "DMSans_700Bold" }]}>
               You're subscribed
@@ -603,11 +603,12 @@ export default function PaywallScreen() {
         >
           {/* CTA Button */}
           <AnimatedPressable onPress={handlePurchase} disabled={isCtaDisabled}>
-            <LinearGradient
-              colors={["#00DDFE", "#D702F0"]}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={[styles.ctaButton, isCtaDisabled && { opacity: 0.6 }]}
+            <View
+              style={[
+                styles.ctaButton,
+                { backgroundColor: colors.primary },
+                isCtaDisabled && { opacity: 0.6 },
+              ]}
             >
               {purchasing ? (
                 <ActivityIndicator color="#fff" />
@@ -616,7 +617,7 @@ export default function PaywallScreen() {
                   {ctaLabel}
                 </Text>
               )}
-            </LinearGradient>
+            </View>
           </AnimatedPressable>
 
           {/* Restore + Skip row */}
@@ -806,12 +807,10 @@ export default function PaywallScreen() {
                       disabled={promoApplying}
                       style={{ flex: 1 }}
                     >
-                      <LinearGradient
-                        colors={["#00DDFE", "#D702F0"]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
+                      <View
                         style={[
                           styles.modalApplyButton,
+                          { backgroundColor: colors.primary },
                           promoApplying && { opacity: 0.6 },
                         ]}
                       >
@@ -827,7 +826,7 @@ export default function PaywallScreen() {
                             Apply
                           </Text>
                         )}
-                      </LinearGradient>
+                      </View>
                     </AnimatedPressable>
                   </View>
                 </View>
@@ -1094,7 +1093,6 @@ const styles = StyleSheet.create({
   },
   subscribedIcon: {
     fontSize: 32,
-    color: "#00DDFE",
   },
   subscribedTitle: {
     fontSize: 26,
