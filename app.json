@@ -15,7 +15,16 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.tablepulse.app",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      },
+      "entitlements": {
+        "aps-environment": "production",
+        "com.apple.security.application-groups": [
+          "group.com.tablepulse.app.onesignal"
+        ]
       }
     },
     "android": {
@@ -33,6 +42,12 @@
       "bundler": "metro"
     },
     "plugins": [
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "production"
+        }
+      ],
       "expo-font",
       "expo-router",
       "expo-web-browser",
@@ -43,7 +58,8 @@
       "typedRoutes": true
     },
     "extra": {
-      "router": {}
+      "router": {},
+      "oneSignalAppId": "b0daf7ae-e43e-4d83-b599-2431872f590a"
     }
   }
 }

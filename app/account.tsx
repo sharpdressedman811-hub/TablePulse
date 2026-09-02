@@ -26,6 +26,7 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { supabase } from "@/utils/supabase";
 import { useAuth } from "@/contexts/AuthContext";
+import { useNotifications } from "@/contexts/NotificationContext";
 
 const LIGHT = {
   background: "#F0F4F3",
@@ -58,6 +59,8 @@ export default function AccountScreen() {
   const { session, signOut } = useAuth();
   const colorScheme = useColorScheme();
   const colors = colorScheme === "dark" ? DARK : LIGHT;
+
+  const { hasPermission } = useNotifications();
 
   const [step, setStep] = useState<"info" | "confirm" | "deleting">("info");
   const [confirmText, setConfirmText] = useState("");
@@ -149,6 +152,30 @@ export default function AccountScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
+        {/* Notification Preferences */}
+        <Pressable
+          style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}
+          onPress={() => {
+            console.log('[AccountScreen] Notification Preferences tapped');
+            router.push('/notification-preferences');
+          }}
+          accessibilityRole="button"
+          accessibilityLabel="Notification Preferences"
+        >
+          <View style={styles.cardRow}>
+            <View style={[styles.avatarCircle, { backgroundColor: colors.primary + "22" }]}>
+              <Ionicons name="notifications-outline" size={22} color={colors.primary} />
+            </View>
+            <View style={styles.cardRowText}>
+              <Text style={[styles.cardValue, { color: colors.text }]}>Notification Preferences</Text>
+              <Text style={[styles.cardLabel, { color: colors.textTertiary }]}>
+                {hasPermission ? "Notifications enabled" : "Tap to enable notifications"}
+              </Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.textTertiary} />
+          </View>
+        </Pressable>
+
         {/* Account info card */}
         <View style={[styles.card, { backgroundColor: colors.surface, borderColor: colors.border }]}>
           <View style={styles.cardRow}>

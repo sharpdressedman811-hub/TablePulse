@@ -11,6 +11,7 @@ import { AnimatedPressable } from "@/components/AnimatedPressable";
 import { RecommendationCard } from "@/components/RecommendationCard";
 import { SkeletonScreen } from "@/components/SkeletonLoader";
 import { MetricCard } from "@/components/MetricCard";
+import { NotificationBell } from "@/components/NotificationBell";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/utils/supabase";
@@ -164,10 +165,13 @@ export default function HomeScreen() {
             {locationCountText}
           </Text>
         </View>
-        <View style={[styles.statusBadge, { backgroundColor: colors.primaryMuted }]}>
-          <Text style={[styles.statusBadgeText, { color: colors.primary }]}>
-            Live
-          </Text>
+        <View style={styles.headerRight}>
+          <View style={[styles.statusBadge, { backgroundColor: colors.primaryMuted }]}>
+            <Text style={[styles.statusBadgeText, { color: colors.primary }]}>
+              Live
+            </Text>
+          </View>
+          <NotificationBell />
         </View>
       </View>
 
@@ -296,11 +300,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'DMSans_400Regular',
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 4,
+  },
   statusBadge: {
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 8,
-    marginTop: 4,
   },
   statusBadgeText: {
     fontSize: 12,
