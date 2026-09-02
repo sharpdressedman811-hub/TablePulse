@@ -4,10 +4,10 @@
     "slug": "tablepulse",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/app-icon-ktj.png",
+    "icon": "./assets/images/app-icon-sgx.png",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/app-icon-ktj.png",
+      "image": "./assets/images/app-icon-sgx.png",
       "resizeMode": "contain",
       "backgroundColor": "#FFFFFF"
     },
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/app-icon-ktj.png",
+        "foregroundImage": "./assets/images/app-icon-sgx.png",
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.tablepulse.app"
