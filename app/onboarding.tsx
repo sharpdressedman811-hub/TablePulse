@@ -171,11 +171,15 @@ export default function OnboardingScreen() {
       setSaveError('');
       try {
         await saveToSupabase(answers);
+      } catch (err: any) {
+        console.warn('[Onboarding] Supabase save failed (non-fatal):', err?.message);
+      }
+      try {
         await completeOnboarding();
         console.log('[Onboarding] Onboarding complete — navigating to paywall');
         router.replace("/paywall");
       } catch (err: any) {
-        console.error('[Onboarding] Save error:', err);
+        console.error('[Onboarding] completeOnboarding error:', err);
         setSaveError('Failed to save. Please try again.');
         setSaving(false);
       }

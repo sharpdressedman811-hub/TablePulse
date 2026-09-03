@@ -27,7 +27,6 @@ import {
   DMSans_600SemiBold,
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
-import { supabase } from "@/utils/supabase";
 import { isOnboardingComplete } from "@/utils/onboardingStorage";
 
 // Only wrap with ErrorBoundary in dev — production apps should not include it
@@ -57,16 +56,8 @@ function NavigationGuard() {
       setOnboardingDone(null);
       return;
     }
-    console.log('[NavigationGuard] Checking onboarding for user:', session.user.id);
-    Promise.all([
-      supabase.from('onboarding_responses').select('id').eq('user_id', session.user.id).limit(1),
-      isOnboardingComplete(),
-    ]).then(([supabaseResult, localDone]) => {
-      if (supabaseResult.error) {
-        console.warn('[NavigationGuard] Onboarding Supabase check error:', supabaseResult.error.message);
-      }
-      const done = localDone || (Array.isArray(supabaseResult.data) && supabaseResult.data.length > 0);
-      console.log('[NavigationGuard] Onboarding complete (supabase:', Array.isArray(supabaseResult.data) && supabaseResult.data.length > 0, ', local:', localDone, '):', done);
+    isOnboardingComplete().then((done) => {
+      console.log('[NavigationGuard] Onboarding complete (SecureStore):', done);
       setOnboardingDone(done);
     });
   }, [session]);
