@@ -28,6 +28,7 @@ import {
   DMSans_700Bold,
 } from "@expo-google-fonts/dm-sans";
 import { supabase } from "@/utils/supabase";
+import { isOnboardingComplete } from "@/utils/onboardingStorage";
 
 // Only wrap with ErrorBoundary in dev — production apps should not include it
 const DevErrorBoundary = __DEV__
@@ -57,21 +58,17 @@ function NavigationGuard() {
       return;
     }
     console.log('[NavigationGuard] Checking onboarding for user:', session.user.id);
-    supabase
-      .from('onboarding_responses')
-      .select('id')
-      .eq('user_id', session.user.id)
-      .limit(1)
-      .then(({ data, error }) => {
-        if (error) {
-          console.warn('[NavigationGuard] Onboarding check error:', error.message);
-          setOnboardingDone(false);
-        } else {
-          const done = Array.isArray(data) && data.length > 0;
-          console.log('[NavigationGuard] Onboarding complete:', done);
-          setOnboardingDone(done);
-        }
-      });
+    Promise.all([
+      supabase.from('onboarding_responses').select('id').eq('user_id', session.user.id).limit(1),
+      isOnboardingComplete(),
+    ]).then(([supabaseResult, localDone]) => {
+      if (supabaseResult.error) {
+        console.warn('[NavigationGuard] Onboarding Supabase check error:', supabaseResult.error.message);
+      }
+      const done = localDone || (Array.isArray(supabaseResult.data) && supabaseResult.data.length > 0);
+      console.log('[NavigationGuard] Onboarding complete (supabase:', Array.isArray(supabaseResult.data) && supabaseResult.data.length > 0, ', local:', localDone, '):', done);
+      setOnboardingDone(done);
+    });
   }, [session]);
 
   useEffect(() => {

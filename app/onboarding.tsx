@@ -237,11 +237,11 @@ export default function OnboardingScreen() {
         {isTextInput ? (
           <View style={styles.textInputSection}>
             <TextInput
-              style={styles.textInput}
+              style={[styles.textInput, { color: colors.text, backgroundColor: colors.card, borderColor: colors.border }]}
               value={textInputValue}
               onChangeText={handleTextChange}
               placeholder="e.g. The Golden Fork"
-              placeholderTextColor="rgba(255,255,255,0.35)"
+              placeholderTextColor={colors.text + '59'}
               autoFocus
               returnKeyType="done"
               onSubmitEditing={handleContinue}
@@ -326,14 +326,11 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   textInput: {
-    backgroundColor: "rgba(0, 221, 254, 0.08)",
     borderWidth: 1.5,
-    borderColor: "#00DDFE",
     borderRadius: 12,
     paddingHorizontal: 16,
     paddingVertical: 16,
     fontSize: 18,
-    color: "#FFFFFF",
     fontWeight: "500",
   },
   optionsSection: {
