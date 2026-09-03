@@ -303,7 +303,6 @@ function TierCard({
 
 export default function PaywallScreen() {
   const router = useRouter();
-  const colorScheme = useColorScheme();
   const { brandColors } = useBranding();
   const colors = brandColors;
 
