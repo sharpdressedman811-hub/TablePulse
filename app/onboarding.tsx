@@ -19,12 +19,14 @@ import { completeOnboarding } from "@/utils/onboardingStorage";
 import { ProgressBar } from "@/components/onboarding/ProgressBar";
 import { OptionCard } from "@/components/onboarding/OptionCard";
 import { useOnboardingColors } from "@/hooks/useOnboardingColors";
+import { useOnboarding } from "@/contexts/OnboardingContext";
 import { supabase } from "@/utils/supabase";
 
 const TOTAL_STEPS = onboardingQuestions.length;
 
 export default function OnboardingScreen() {
   const colors = useOnboardingColors();
+  const { setOnboardingDone } = useOnboarding();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
   const [textInputValue, setTextInputValue] = useState("");
@@ -176,13 +178,16 @@ export default function OnboardingScreen() {
       }
       try {
         await completeOnboarding();
-        console.log('[Onboarding] Onboarding complete — navigating to paywall');
-        router.replace("/paywall");
       } catch (err: any) {
-        console.error('[Onboarding] completeOnboarding error:', err);
-        setSaveError('Failed to save. Please try again.');
-        setSaving(false);
+        // SecureStore write failed — non-fatal. Set in-memory flag so the guard
+        // doesn't loop the user back to onboarding even if the write didn't persist.
+        console.warn('[Onboarding] completeOnboarding SecureStore error (non-fatal):', err);
       }
+      // Set in-memory flag BEFORE navigating so NavigationGuard sees onboardingDone===true
+      // immediately and does not redirect back to /onboarding.
+      setOnboardingDone(true);
+      console.log('[Onboarding] Onboarding complete — navigating to paywall');
+      router.replace("/paywall");
     } else {
       if (isAnimating.current) return;
       isAnimating.current = true;

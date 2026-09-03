@@ -1,6 +1,6 @@
 import "react-native-reanimated";
-import React, { useEffect, useState } from "react";
-import { Stack, Redirect, usePathname, useRouter } from "expo-router";
+import React, { useEffect } from "react";
+import { Stack, usePathname, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { SystemBars } from "react-native-edge-to-edge";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -19,6 +19,7 @@ import { SubscriptionProvider, useSubscription } from "@/contexts/SubscriptionCo
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { BrandingProvider } from "@/contexts/BrandingContext";
 import { NotificationProvider } from "@/contexts/NotificationContext";
+import { OnboardingProvider, useOnboarding } from "@/contexts/OnboardingContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import {
   useFonts,
@@ -47,19 +48,24 @@ const PUBLIC_ROUTES = ["/auth", "/auth-popup", "/auth-callback", "/onboarding", 
 function NavigationGuard() {
   const { session, loading: authLoading } = useAuth();
   const { isSubscribed, loading: subLoading } = useSubscription();
+  const { onboardingDone, setOnboardingDone } = useOnboarding();
   const pathname = usePathname();
   const router = useRouter();
-  const [onboardingDone, setOnboardingDone] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (!session) {
       setOnboardingDone(null);
       return;
     }
+    // Only read SecureStore when onboardingDone is not already set to true in memory.
+    // This prevents the guard from overwriting the in-memory true set by onboarding.tsx
+    // before the SecureStore write has been flushed.
+    if (onboardingDone === true) return;
     isOnboardingComplete().then((done) => {
       console.log('[NavigationGuard] Onboarding complete (SecureStore):', done);
       setOnboardingDone(done);
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   useEffect(() => {
@@ -222,10 +228,12 @@ export default function RootLayout() {
       <BrandingProvider>
         <SubscriptionProvider>
           <NotificationProvider>
-            <DevErrorBoundary>
-              <StatusBar style="auto" animated />
-              <AppContent />
-            </DevErrorBoundary>
+            <OnboardingProvider>
+              <DevErrorBoundary>
+                <StatusBar style="auto" animated />
+                <AppContent />
+              </DevErrorBoundary>
+            </OnboardingProvider>
           </NotificationProvider>
         </SubscriptionProvider>
       </BrandingProvider>
