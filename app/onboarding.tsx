@@ -4,8 +4,10 @@ import {
   Pressable,
   StyleSheet,
   Text,
+  TextInput,
   View,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
@@ -25,20 +27,34 @@ export default function OnboardingScreen() {
   const colors = useOnboardingColors();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [textInputValue, setTextInputValue] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState('');
   const opacity = useSharedValue(1);
   const isAnimating = useRef(false);
 
   const question = onboardingQuestions[currentStep];
+  const isTextInput = question?.inputType === 'text';
   const selectedOption = answers[currentStep];
   const isLastStep = currentStep === TOTAL_STEPS - 1;
   const isFirstStep = currentStep === 0;
+
+  // For text input steps, seed the input from saved answers when navigating back
+  useEffect(() => {
+    if (isTextInput) {
+      setTextInputValue(answers[currentStep] ?? "");
+    }
+  }, [currentStep, isTextInput]);
+
+  const canContinue = isTextInput
+    ? textInputValue.trim().length > 0
+    : !!selectedOption;
 
   const animatedStyle = useAnimatedStyle(() => ({ opacity: opacity.value }));
 
   const goBack = useCallback(() => {
     if (!isFirstStep && !isAnimating.current) {
+      console.log('[Onboarding] Back pressed — step:', currentStep);
       isAnimating.current = true;
       opacity.value = withTiming(0, { duration: 150 });
       setTimeout(() => {
@@ -47,7 +63,7 @@ export default function OnboardingScreen() {
         isAnimating.current = false;
       }, 150);
     }
-  }, [isFirstStep, opacity]);
+  }, [isFirstStep, currentStep, opacity]);
 
   useEffect(() => {
     const sub = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -63,6 +79,11 @@ export default function OnboardingScreen() {
   const handleSelect = (optionId: string) => {
     console.log('[Onboarding] Option selected — step:', currentStep, 'option:', optionId);
     setAnswers((prev) => ({ ...prev, [currentStep]: optionId }));
+  };
+
+  const handleTextChange = (value: string) => {
+    setTextInputValue(value);
+    setAnswers((prev) => ({ ...prev, [currentStep]: value }));
   };
 
   const saveToSupabase = async (finalAnswers: Record<number, string>) => {
@@ -97,9 +118,9 @@ export default function OnboardingScreen() {
 
     console.log('[Onboarding] Responses saved successfully');
 
-    // Derive restaurant name from answers (question 0 is typically restaurant name/type)
-    const restaurantName = responsesObj['restaurant_name'] ?? responsesObj['q0'] ?? 'My Restaurant';
-    const restaurantType = responsesObj['cuisine_type'] ?? responsesObj['q1'] ?? 'Restaurant';
+    // Question 0 is restaurant_name (free text), question 1 is restaurant_type
+    const restaurantName = finalAnswers[0] ?? 'My Restaurant';
+    const restaurantType = finalAnswers[1] ?? 'restaurant';
 
     // Create restaurant group
     const { data: groupData, error: groupError } = await supabase
@@ -142,7 +163,7 @@ export default function OnboardingScreen() {
   };
 
   const handleContinue = async () => {
-    if (!selectedOption) return;
+    if (!canContinue) return;
     console.log('[Onboarding] Continue pressed — step:', currentStep, 'isLast:', isLastStep);
 
     if (isLastStep) {
@@ -173,16 +194,18 @@ export default function OnboardingScreen() {
   if (!question) return null;
 
   const optionCards: React.ReactElement[] = [];
-  for (const option of question.options) {
-    optionCards.push(
-      <OptionCard
-        key={option.id}
-        emoji={option.emoji}
-        label={option.label}
-        selected={selectedOption === option.id}
-        onPress={() => handleSelect(option.id)}
-      />
-    );
+  if (!isTextInput) {
+    for (const option of question.options) {
+      optionCards.push(
+        <OptionCard
+          key={option.id}
+          emoji={option.emoji}
+          label={option.label}
+          selected={selectedOption === option.id}
+          onPress={() => handleSelect(option.id)}
+        />
+      );
+    }
   }
 
   return (
@@ -211,9 +234,28 @@ export default function OnboardingScreen() {
           </Text>
         </View>
 
-        <View style={styles.optionsSection}>
-          {optionCards}
-        </View>
+        {isTextInput ? (
+          <View style={styles.textInputSection}>
+            <TextInput
+              style={styles.textInput}
+              value={textInputValue}
+              onChangeText={handleTextChange}
+              placeholder="e.g. The Golden Fork"
+              placeholderTextColor="rgba(255,255,255,0.35)"
+              autoFocus
+              returnKeyType="done"
+              onSubmitEditing={handleContinue}
+            />
+          </View>
+        ) : (
+          <ScrollView
+            style={styles.optionsSection}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.optionsContent}
+          >
+            {optionCards}
+          </ScrollView>
+        )}
       </Animated.View>
 
       <View style={[styles.footer, { paddingBottom: 16 }]}>
@@ -222,12 +264,12 @@ export default function OnboardingScreen() {
         ) : null}
         <Pressable
           onPress={handleContinue}
-          disabled={!selectedOption || saving}
+          disabled={!canContinue || saving}
           style={[
             styles.continueButton,
             {
               backgroundColor: colors.primary,
-              opacity: selectedOption && !saving ? 1 : 0.4,
+              opacity: canContinue && !saving ? 1 : 0.4,
             },
           ]}
         >
@@ -280,8 +322,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 22,
   },
+  textInputSection: {
+    flex: 1,
+  },
+  textInput: {
+    backgroundColor: "rgba(0, 221, 254, 0.08)",
+    borderWidth: 1.5,
+    borderColor: "#00DDFE",
+    borderRadius: 12,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+    fontSize: 18,
+    color: "#FFFFFF",
+    fontWeight: "500",
+  },
   optionsSection: {
     flex: 1,
+  },
+  optionsContent: {
+    paddingBottom: 8,
   },
   footer: {
     paddingHorizontal: 24,
