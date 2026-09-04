@@ -9,5 +9,6 @@ export function useOnboardingColors() {
     text: isDark ? "#fff" : "#000",
     card: isDark ? "#1c1c1e" : "#f2f2f7",
     border: isDark ? "#38383a" : "#c6c6c8",
+    buttonText: "#000032",
   };
 }

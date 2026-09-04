@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   continueText: {
-    color: "#FFFFFF",
+    color: "#000032",
     fontSize: 18,
     fontWeight: "700",
   },
