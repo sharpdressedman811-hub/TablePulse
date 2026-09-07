@@ -365,7 +365,7 @@ export function RecommendationCard({
                 style={{
                   fontSize: 15,
                   fontWeight: '600',
-                  color: '#FFFFFF',
+                  color: '#000032',
                   fontFamily: 'DMSans_600SemiBold',
                 }}
               >

@@ -188,7 +188,7 @@ export default function MarketingScreen() {
                 style={{
                   fontSize: 15,
                   fontWeight: '700',
-                  color: '#FFFFFF',
+                  color: '#000032',
                   fontFamily: 'DMSans_700Bold',
                   letterSpacing: 0.5,
                   textTransform: 'uppercase',

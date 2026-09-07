@@ -610,7 +610,7 @@ export default function PaywallScreen() {
               ]}
             >
               {purchasing ? (
-                <ActivityIndicator color="#fff" />
+                <ActivityIndicator color="#000032" />
               ) : (
                 <Text style={[styles.ctaButtonText, { fontFamily: "DMSans_700Bold" }]}>
                   {ctaLabel}
@@ -814,7 +814,7 @@ export default function PaywallScreen() {
                         ]}
                       >
                         {promoApplying ? (
-                          <ActivityIndicator color="#fff" size="small" />
+                          <ActivityIndicator color="#000032" size="small" />
                         ) : (
                           <Text
                             style={[
@@ -922,7 +922,7 @@ const styles = StyleSheet.create({
   popularBadgeText: {
     fontSize: 10,
     fontWeight: "700",
-    color: "#fff",
+    color: "#000032",
     letterSpacing: 1,
   },
   tierHeader: {
@@ -951,7 +951,7 @@ const styles = StyleSheet.create({
   },
   selectionCheck: {
     fontSize: 12,
-    color: "#fff",
+    color: "#000032",
     fontWeight: "700",
   },
   priceRow: {
@@ -1041,7 +1041,7 @@ const styles = StyleSheet.create({
   },
   ctaButtonText: {
     fontSize: 17,
-    color: "#fff",
+    color: "#000032",
     letterSpacing: -0.2,
   },
   secondaryRow: {
@@ -1199,6 +1199,6 @@ const styles = StyleSheet.create({
   },
   modalApplyText: {
     fontSize: 15,
-    color: "#fff",
+    color: "#000032",
   },
 });

@@ -11,6 +11,8 @@ export interface BrandColors {
   text: string;
   // Derived tokens (always computed from base colors)
   primaryMuted: string;
+  onPrimary: string;
+  onPrimarySubtle: string;
   accentMuted: string;
   surfaceSecondary: string;
   textSecondary: string;
@@ -47,6 +49,8 @@ function buildBrandColors(
     surface,
     text,
     primaryMuted: primary + '26',
+    onPrimary: '#000032',
+    onPrimarySubtle: 'rgba(0,0,50,0.65)',
     accentMuted: accent + '26',
     surfaceSecondary: surface,
     textSecondary: text + 'AA',

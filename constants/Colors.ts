@@ -9,6 +9,8 @@ export const TablePulseColors = {
   light: {
     primary: '#00BDDF',        // electric cyan (slightly deepened for light mode contrast)
     primaryMuted: 'rgba(0, 221, 254, 0.10)',
+    onPrimary: '#000032',      // text/icon color on primary (cyan) surfaces
+    onPrimarySubtle: 'rgba(0,0,50,0.65)', // secondary text on cyan surfaces
     accent: '#D702F0',         // vivid magenta
     accentMuted: 'rgba(215, 2, 240, 0.10)',
     danger: '#EF4444',
@@ -28,6 +30,8 @@ export const TablePulseColors = {
   dark: {
     primary: '#00DDFE',        // electric cyan (exact from logo)
     primaryMuted: 'rgba(0, 221, 254, 0.15)',
+    onPrimary: '#000032',      // text/icon color on primary (cyan) surfaces
+    onPrimarySubtle: 'rgba(0,0,50,0.65)', // secondary text on cyan surfaces
     accent: '#D702F0',         // vivid magenta (exact from logo)
     accentMuted: 'rgba(215, 2, 240, 0.15)',
     danger: '#EF4444',

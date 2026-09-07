@@ -110,12 +110,12 @@ export default function ActionPlanScreen() {
           }}
         >
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Brain size={14} color="rgba(255,255,255,0.8)" />
+            <Brain size={14} color="rgba(0,0,50,0.75)" />
             <Text
               style={{
                 fontSize: 11,
                 fontWeight: '700',
-                color: 'rgba(255,255,255,0.8)',
+                color: 'rgba(0,0,50,0.75)',
                 letterSpacing: 0.8,
                 textTransform: 'uppercase',
                 fontFamily: 'DMSans_700Bold',
@@ -127,7 +127,7 @@ export default function ActionPlanScreen() {
           <Text
             style={{
               fontSize: 14,
-              color: '#FFFFFF',
+              color: '#000032',
               fontFamily: 'DMSans_500Medium',
               lineHeight: 20,
             }}
@@ -137,7 +137,7 @@ export default function ActionPlanScreen() {
           <Text
             style={{
               fontSize: 11,
-              color: 'rgba(255,255,255,0.55)',
+              color: 'rgba(0,0,50,0.50)',
               fontFamily: 'DMSans_400Regular',
               fontStyle: 'italic',
             }}

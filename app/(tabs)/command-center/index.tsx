@@ -186,7 +186,7 @@ export default function CommandCenterScreen() {
             style={{
               fontSize: 11,
               fontWeight: '700',
-              color: 'rgba(255,255,255,0.7)',
+              color: 'rgba(0,0,50,0.65)',
               letterSpacing: 1.2,
               textTransform: 'uppercase',
               fontFamily: 'DMSans_700Bold',
@@ -202,7 +202,7 @@ export default function CommandCenterScreen() {
               <Text
                 style={{
                   fontSize: 11,
-                  color: 'rgba(255,255,255,0.65)',
+                  color: 'rgba(0,0,50,0.60)',
                   fontFamily: 'DMSans_400Regular',
                   marginBottom: 2,
                 }}
@@ -213,7 +213,7 @@ export default function CommandCenterScreen() {
                 style={{
                   fontSize: 24,
                   fontWeight: '700',
-                  color: '#FFFFFF',
+                  color: '#000032',
                   fontFamily: 'DMSans_700Bold',
                   letterSpacing: -0.3,
                   fontVariant: ['tabular-nums'],
@@ -226,7 +226,7 @@ export default function CommandCenterScreen() {
               <Text
                 style={{
                   fontSize: 11,
-                  color: 'rgba(255,255,255,0.65)',
+                  color: 'rgba(0,0,50,0.60)',
                   fontFamily: 'DMSans_400Regular',
                   marginBottom: 2,
                 }}
@@ -249,7 +249,7 @@ export default function CommandCenterScreen() {
               <Text
                 style={{
                   fontSize: 11,
-                  color: 'rgba(255,255,255,0.65)',
+                  color: 'rgba(0,0,50,0.60)',
                   fontFamily: 'DMSans_400Regular',
                   marginBottom: 2,
                 }}
@@ -260,7 +260,7 @@ export default function CommandCenterScreen() {
                 style={{
                   fontSize: 24,
                   fontWeight: '700',
-                  color: '#FFFFFF',
+                  color: '#000032',
                   fontFamily: 'DMSans_700Bold',
                   letterSpacing: -0.3,
                   fontVariant: ['tabular-nums'],
@@ -273,7 +273,7 @@ export default function CommandCenterScreen() {
               <Text
                 style={{
                   fontSize: 11,
-                  color: 'rgba(255,255,255,0.65)',
+                  color: 'rgba(0,0,50,0.60)',
                   fontFamily: 'DMSans_400Regular',
                   marginBottom: 2,
                 }}
@@ -284,7 +284,7 @@ export default function CommandCenterScreen() {
                 style={{
                   fontSize: 24,
                   fontWeight: '700',
-                  color: '#FFFFFF',
+                  color: '#000032',
                   fontFamily: 'DMSans_700Bold',
                   letterSpacing: -0.3,
                   fontVariant: ['tabular-nums'],
@@ -298,7 +298,7 @@ export default function CommandCenterScreen() {
           {/* Labor bar */}
           <View
             style={{
-              backgroundColor: 'rgba(255,255,255,0.12)',
+              backgroundColor: 'rgba(0,0,50,0.10)',
               borderRadius: 12,
               padding: 12,
             }}
@@ -307,7 +307,7 @@ export default function CommandCenterScreen() {
               <Text
                 style={{
                   fontSize: 12,
-                  color: 'rgba(255,255,255,0.8)',
+                  color: 'rgba(0,0,50,0.75)',
                   fontFamily: 'DMSans_500Medium',
                 }}
               >
@@ -317,23 +317,23 @@ export default function CommandCenterScreen() {
                 style={{
                   fontSize: 12,
                   fontWeight: '700',
-                  color: laborAboveTarget ? colors.accent : '#FFFFFF',
+                  color: laborAboveTarget ? colors.accent : '#000032',
                   fontFamily: 'DMSans_700Bold',
                 }}
               >
                 {TODAY_METRICS.laborPercent}%
                 {' '}
-                <Text style={{ fontWeight: '400', color: 'rgba(255,255,255,0.6)' }}>
+                <Text style={{ fontWeight: '400', color: 'rgba(0,0,50,0.55)' }}>
                   {laborTargetText}
                 </Text>
               </Text>
             </View>
-            <View style={{ height: 6, backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: 3 }}>
+            <View style={{ height: 6, backgroundColor: 'rgba(0,0,50,0.15)', borderRadius: 3 }}>
               <View
                 style={{
                   height: 6,
                   width: `${Math.min((TODAY_METRICS.laborPercent / 40) * 100, 100)}%`,
-                  backgroundColor: laborAboveTarget ? colors.accent : '#FFFFFF',
+                  backgroundColor: laborAboveTarget ? colors.accent : '#000032',
                   borderRadius: 3,
                 }}
               />
@@ -345,7 +345,7 @@ export default function CommandCenterScreen() {
                   top: -2,
                   width: 2,
                   height: 10,
-                  backgroundColor: 'rgba(255,255,255,0.9)',
+                  backgroundColor: 'rgba(0,0,50,0.7)',
                   borderRadius: 1,
                 }}
               />
