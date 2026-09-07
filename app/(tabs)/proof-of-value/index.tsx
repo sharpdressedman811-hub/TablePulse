@@ -124,11 +124,11 @@ export default function ProofOfValueScreen() {
               paddingVertical: 6,
               gap: 4,
             }}>
-              <Star size={12} color="#FFFFFF" fill="#FFFFFF" />
+              <Star size={12} color="#000032" fill="#000032" />
               <Text style={{
                 fontSize: 13,
                 fontFamily: 'DMSans_700Bold',
-                color: '#FFFFFF',
+                color: '#000032',
               }}>
                 87/100
               </Text>
@@ -148,7 +148,7 @@ export default function ProofOfValueScreen() {
               <Text style={{
                 fontSize: 64,
                 fontFamily: 'DMSans_700Bold',
-                color: '#FFFFFF',
+                color: '#000032',
                 lineHeight: 72,
               }}>
                 {report.overallScore}
@@ -156,18 +156,18 @@ export default function ProofOfValueScreen() {
               <View style={{
                 flexDirection: 'row',
                 alignItems: 'center',
-                backgroundColor: 'rgba(255,255,255,0.2)',
+                backgroundColor: 'rgba(0,0,50,0.12)',
                 borderRadius: 12,
                 paddingHorizontal: 12,
                 paddingVertical: 4,
                 marginTop: 4,
                 gap: 4,
               }}>
-                <CheckCircle size={14} color="#FFFFFF" />
+                <CheckCircle size={14} color="#000032" />
                 <Text style={{
                   fontSize: 13,
                   fontFamily: 'DMSans_600SemiBold',
-                  color: '#FFFFFF',
+                  color: '#000032',
                 }}>
                   {classification.label}
                 </Text>
@@ -177,7 +177,7 @@ export default function ProofOfValueScreen() {
             <Text style={{
               fontSize: 13,
               fontFamily: 'DMSans_400Regular',
-              color: 'rgba(255,255,255,0.75)',
+              color: 'rgba(0,0,50,0.65)',
               textAlign: 'center',
               marginBottom: 12,
             }}>
@@ -209,7 +209,7 @@ export default function ProofOfValueScreen() {
             <View style={{ position: 'relative', height: 8 }}>
               <View style={{
                 height: 6,
-                backgroundColor: 'rgba(255,255,255,0.2)',
+                backgroundColor: 'rgba(0,0,50,0.15)',
                 borderRadius: 3,
                 overflow: 'hidden',
                 marginTop: 1,
@@ -217,7 +217,7 @@ export default function ProofOfValueScreen() {
                 <View style={{
                   width: `${report.overallScore}%`,
                   height: '100%',
-                  backgroundColor: '#FFFFFF',
+                  backgroundColor: '#000032',
                   borderRadius: 3,
                 }} />
               </View>
@@ -233,9 +233,9 @@ export default function ProofOfValueScreen() {
               }} />
             </View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 4 }}>
-              <Text style={{ fontSize: 10, fontFamily: 'DMSans_400Regular', color: 'rgba(255,255,255,0.5)' }}>0</Text>
+              <Text style={{ fontSize: 10, fontFamily: 'DMSans_400Regular', color: 'rgba(0,0,50,0.45)' }}>0</Text>
               <Text style={{ fontSize: 10, fontFamily: 'DMSans_400Regular', color: '#F59E0B' }}>Target: 85</Text>
-              <Text style={{ fontSize: 10, fontFamily: 'DMSans_400Regular', color: 'rgba(255,255,255,0.5)' }}>100</Text>
+              <Text style={{ fontSize: 10, fontFamily: 'DMSans_400Regular', color: 'rgba(0,0,50,0.45)' }}>100</Text>
             </View>
           </View>
         </AnimatedListItem>
