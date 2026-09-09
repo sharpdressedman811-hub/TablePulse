@@ -759,7 +759,7 @@ export default function CommandCenterScreen() {
             await resetOnboarding();
             router.replace('/onboarding');
           }}
-          style={{ alignItems: 'center', paddingVertical: 16, paddingBottom: 8 }}
+          style={{ alignItems: 'center', paddingVertical: 16, paddingBottom: 4 }}
         >
           <Text
             style={{
@@ -769,6 +769,27 @@ export default function CommandCenterScreen() {
             }}
           >
             Reset &amp; restart onboarding
+          </Text>
+        </TouchableOpacity>
+      </AnimatedListItem>
+
+      {/* View Screenshots */}
+      <AnimatedListItem index={9}>
+        <TouchableOpacity
+          onPress={() => {
+            console.log('[CommandCenter] View Screenshots pressed');
+            router.push('/screenshots');
+          }}
+          style={{ alignItems: 'center', paddingVertical: 8, paddingBottom: 16 }}
+        >
+          <Text
+            style={{
+              fontSize: 13,
+              color: colors.primary,
+              fontFamily: 'DMSans_400Regular',
+            }}
+          >
+            View Screenshots
           </Text>
         </TouchableOpacity>
       </AnimatedListItem>
