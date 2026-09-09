@@ -72,6 +72,34 @@ export default function ActionPlanScreen() {
         }}
       showsVerticalScrollIndicator={false}
     >
+      {/* Demo Mode Banner */}
+      <View style={{
+        backgroundColor: 'rgba(245,158,11,0.12)',
+        borderRadius: 10,
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        marginTop: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        borderWidth: 1,
+        borderColor: 'rgba(245,158,11,0.25)',
+      }}>
+        <Text style={{
+          fontSize: 12,
+          fontFamily: 'DMSans_600SemiBold',
+          color: '#F59E0B',
+          textTransform: 'uppercase',
+          letterSpacing: 0.5,
+        }}>Demo Mode</Text>
+        <Text style={{
+          fontSize: 12,
+          fontFamily: 'DMSans_400Regular',
+          color: 'rgba(245,158,11,0.8)',
+          flex: 1,
+        }}>Simulated data — not real production activity</Text>
+      </View>
+
       {/* Subtitle */}
       <AnimatedListItem index={0}>
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingTop: 4 }}>

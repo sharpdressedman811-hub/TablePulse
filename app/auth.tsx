@@ -240,8 +240,13 @@ export default function AuthScreen() {
 
                 <Pressable
                   style={styles.socialButton}
-                  onPress={() => {
+                  onPress={async () => {
                     console.log('[Auth] Continue with Apple tapped');
+                    const { error } = await supabase.auth.signInWithOAuth({
+                      provider: 'apple',
+                      options: { redirectTo: 'tablepulse://auth-callback' },
+                    });
+                    if (error) setSignInError(error.message);
                   }}
                 >
                   <Text style={styles.socialButtonText}>  Continue with Apple</Text>
@@ -249,8 +254,13 @@ export default function AuthScreen() {
 
                 <Pressable
                   style={styles.socialButtonOutline}
-                  onPress={() => {
+                  onPress={async () => {
                     console.log('[Auth] Continue with Google tapped');
+                    const { error } = await supabase.auth.signInWithOAuth({
+                      provider: 'google',
+                      options: { redirectTo: 'tablepulse://auth-callback' },
+                    });
+                    if (error) setSignInError(error.message);
                   }}
                 >
                   <Text style={styles.socialButtonOutlineText}>Continue with Google</Text>
@@ -359,8 +369,13 @@ export default function AuthScreen() {
 
                     <Pressable
                       style={styles.socialButton}
-                      onPress={() => {
-                        console.log('[Auth] Continue with Apple tapped (signup)');
+                      onPress={async () => {
+                        console.log('[Auth] Continue with Apple tapped');
+                        const { error } = await supabase.auth.signInWithOAuth({
+                          provider: 'apple',
+                          options: { redirectTo: 'tablepulse://auth-callback' },
+                        });
+                        if (error) setSignUpError(error.message);
                       }}
                     >
                       <Text style={styles.socialButtonText}>  Continue with Apple</Text>
@@ -368,8 +383,13 @@ export default function AuthScreen() {
 
                     <Pressable
                       style={styles.socialButtonOutline}
-                      onPress={() => {
-                        console.log('[Auth] Continue with Google tapped (signup)');
+                      onPress={async () => {
+                        console.log('[Auth] Continue with Google tapped');
+                        const { error } = await supabase.auth.signInWithOAuth({
+                          provider: 'google',
+                          options: { redirectTo: 'tablepulse://auth-callback' },
+                        });
+                        if (error) setSignUpError(error.message);
                       }}
                     >
                       <Text style={styles.socialButtonOutlineText}>Continue with Google</Text>

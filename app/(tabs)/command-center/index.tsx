@@ -107,6 +107,34 @@ export default function CommandCenterScreen() {
         }}
       showsVerticalScrollIndicator={false}
     >
+      {/* Demo Mode Banner */}
+      <View style={{
+        backgroundColor: 'rgba(245,158,11,0.12)',
+        borderRadius: 10,
+        paddingHorizontal: 14,
+        paddingVertical: 8,
+        marginTop: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        borderWidth: 1,
+        borderColor: 'rgba(245,158,11,0.25)',
+      }}>
+        <Text style={{
+          fontSize: 12,
+          fontFamily: 'DMSans_600SemiBold',
+          color: '#F59E0B',
+          textTransform: 'uppercase',
+          letterSpacing: 0.5,
+        }}>Demo Mode</Text>
+        <Text style={{
+          fontSize: 12,
+          fontFamily: 'DMSans_400Regular',
+          color: 'rgba(245,158,11,0.8)',
+          flex: 1,
+        }}>Simulated data — not real production activity</Text>
+      </View>
+
       {/* Header */}
       <AnimatedListItem index={0}>
         <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', paddingTop: 8 }}>
@@ -751,48 +779,29 @@ export default function CommandCenterScreen() {
         </View>
       </AnimatedListItem>
 
-      {/* Reset / Start Over */}
-      <AnimatedListItem index={8}>
-        <TouchableOpacity
-          onPress={async () => {
-            console.log('[CommandCenter] Reset & restart onboarding pressed');
-            await resetOnboarding();
-            router.replace('/onboarding');
-          }}
-          style={{ alignItems: 'center', paddingVertical: 16, paddingBottom: 4 }}
-        >
-          <Text
-            style={{
-              fontSize: 13,
-              color: colors.textTertiary,
-              fontFamily: 'DMSans_400Regular',
+      {/* Reset / Start Over — dev only */}
+      {__DEV__ && (
+        <AnimatedListItem index={8}>
+          <TouchableOpacity
+            onPress={async () => {
+              console.log('[CommandCenter] Reset & restart onboarding pressed');
+              await resetOnboarding();
+              router.replace('/onboarding');
             }}
+            style={{ alignItems: 'center', paddingVertical: 16, paddingBottom: 4 }}
           >
-            Reset &amp; restart onboarding
-          </Text>
-        </TouchableOpacity>
-      </AnimatedListItem>
-
-      {/* View Screenshots */}
-      <AnimatedListItem index={9}>
-        <TouchableOpacity
-          onPress={() => {
-            console.log('[CommandCenter] View Screenshots pressed');
-            router.push('/screenshots');
-          }}
-          style={{ alignItems: 'center', paddingVertical: 8, paddingBottom: 16 }}
-        >
-          <Text
-            style={{
-              fontSize: 13,
-              color: colors.primary,
-              fontFamily: 'DMSans_400Regular',
-            }}
-          >
-            View Screenshots
-          </Text>
-        </TouchableOpacity>
-      </AnimatedListItem>
+            <Text
+              style={{
+                fontSize: 13,
+                color: colors.textTertiary,
+                fontFamily: 'DMSans_400Regular',
+              }}
+            >
+              Reset &amp; restart onboarding
+            </Text>
+          </TouchableOpacity>
+        </AnimatedListItem>
+      )}
     </Animated.ScrollView>
   );
 }

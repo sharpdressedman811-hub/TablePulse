@@ -5,7 +5,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Redirect } from 'expo-router';
 
 const NAVY = '#000032';
 const CYAN = '#00BDDF';
@@ -709,6 +709,10 @@ function Card5MultiLocation() {
 
 export default function ScreenshotsScreen() {
   const router = useRouter();
+
+  if (!__DEV__) {
+    return <Redirect href="/(tabs)/command-center" />;
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: NAVY }}>

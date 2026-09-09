@@ -192,6 +192,8 @@ function AppContent() {
                   headerShown: false,
                 }}
               />
+              <Stack.Screen name="founder-dashboard" options={{ headerShown: false }} />
+              <Stack.Screen name="screenshots" options={{ headerShown: false }} />
               <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
               <Stack.Screen
                 name="recommendation/[id]"
