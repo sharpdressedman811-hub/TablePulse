@@ -9,33 +9,47 @@
     "splash": {
       "image": "./assets/images/app-icon-iyn.png",
       "resizeMode": "contain",
-      "backgroundColor": "#FFFFFF"
+      "backgroundColor": "#000032"
     },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.tablepulse.app",
+      "buildNumber": "1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false,
         "UIBackgroundModes": [
           "remote-notification"
-        ]
+        ],
+        "NSCameraUsageDescription": "TablePulse uses your camera to capture photos for your restaurant profile and analytics reports.",
+        "NSPhotoLibraryUsageDescription": "TablePulse accesses your photo library so you can upload images for your restaurant profile and reports."
       },
       "entitlements": {
         "aps-environment": "production",
         "com.apple.security.application-groups": [
           "group.com.tablepulse.app.onesignal"
         ]
+      },
+      "privacyManifests": {
+        "NSPrivacyAccessedAPITypes": [
+          {
+            "NSPrivacyAccessedAPIType": "NSPrivacyAccessedAPICategoryUserDefaults",
+            "NSPrivacyAccessedAPITypeReasons": ["CA92.1"]
+          }
+        ]
       }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/app-icon-iyn.png",
-        "backgroundColor": "#FFFFFF"
+        "backgroundColor": "#000032"
       },
       "package": "com.tablepulse.app",
-      "notification": {
-        "icon": "./assets/notification-icon.png"
-      }
+      "versionCode": 1,
+      "permissions": [
+        "android.permission.INTERNET",
+        "android.permission.RECEIVE_BOOT_COMPLETED",
+        "android.permission.VIBRATE"
+      ]
     },
     "web": {
       "favicon": "./assets/images/newly.png",
@@ -59,7 +73,8 @@
     },
     "extra": {
       "router": {},
-      "oneSignalAppId": "b0daf7ae-e43e-4d83-b599-2431872f590a"
+      "oneSignalAppId": "b0daf7ae-e43e-4d83-b599-2431872f590a",
+      "projectId": ""
     }
   }
 }
